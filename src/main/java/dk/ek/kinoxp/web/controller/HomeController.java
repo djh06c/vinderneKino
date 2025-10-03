@@ -13,7 +13,7 @@ public class HomeController {
 
     @GetMapping("/billetter")
     public String tickets() {
-        return "home/billetter";
+        return "screenings/list";
     }
 
     @GetMapping("/mad-drikke")

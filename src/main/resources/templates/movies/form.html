@@ -25,12 +25,6 @@
   </select>
 
   <div>
-    <label for="auditorium">Sal</label>
-    <input id="auditorium" th:field="*{auditorium}" />
-    <span th:if="${#fields.hasErrors('auditorium')}" th:errors="*{auditorium}"></span>
-  </div>
-
-  <div>
     <label for="premiere">Premiere</label>
     <input id="premiere" type="date" th:field="*{premiereDate}" />
     <span th:if="${#fields.hasErrors('premiereDate')}" th:errors="*{premiereDate}"></span>
