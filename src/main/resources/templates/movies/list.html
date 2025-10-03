@@ -33,7 +33,6 @@
             <tbody>
             <tr th:each="m : ${activeMovies}">
                 <td th:text="${m.movieTitle}">Titel</td>
-                <td th:text="${m.auditorium}">Sal 1</td>
                 <td th:text="${#temporals.format(m.premiereDate, 'yyyy-MM-dd')}">2025-01-01</td>
                 <td th:text="${#temporals.format(m.endDate, 'yyyy-MM-dd')}">2025-01-31</td>
                 <td th:text="${m.price}">120</td>
@@ -63,7 +62,6 @@
             <tbody>
             <tr th:each="m : ${otherMovies}">
                 <td th:text="${m.movieTitle}"></td>
-                <td th:text="${m.auditorium}"></td>
                 <td th:text="${#temporals.format(m.premiereDate, 'yyyy-MM-dd')}"></td>
                 <td th:text="${#temporals.format(m.endDate, 'yyyy-MM-dd')}"></td>
                 <td th:text="${m.price}"></td>

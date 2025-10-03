@@ -47,6 +47,7 @@ public class MovieController {
     }
 
 
+    //Create film
     @GetMapping("/ny")
     public String createForm(Model model) {
         model.addAttribute("movie", new Movie());
@@ -64,6 +65,7 @@ public class MovieController {
         return "redirect:/movies";
     }
 
+    // Ændre i film
     @GetMapping("/{id}/rediger")
     public String editForm(@PathVariable Long id, Model model){
         model.addAttribute("movie", service.get(id));
@@ -82,6 +84,7 @@ public class MovieController {
         return "redirect:/movies";
     }
 
+    // Slet film
     @PostMapping("/{id}/slet")
     public String delete(@PathVariable Long id){
         service.delete(id);

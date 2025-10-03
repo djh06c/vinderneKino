@@ -15,9 +15,6 @@ public class Movie {
     @NotBlank
     private String movieTitle;
 
-    @NotBlank
-    private String auditorium;
-
     @NotNull
     private LocalDate premiereDate;
 
@@ -35,7 +32,6 @@ public class Movie {
 
     public Long getId() {return id;}
     public String getMovieTitle() {return movieTitle;}
-    public String getAuditorium() {return auditorium;}
     public LocalDate getPremiereDate() {return premiereDate;}
     public LocalDate getEndDate() {return endDate;}
     public int getPrice() {return price;}
@@ -45,7 +41,6 @@ public class Movie {
 
     public void setId(Long id) {this.id = id;}
     public void setMovieTitle(String movieTitle) {this.movieTitle = movieTitle;}
-    public void setAuditorium(String auditorium) {this.auditorium = auditorium;}
     public void setPremiereDate(LocalDate releaseDate) {this.premiereDate = releaseDate;}
     public void setEndDate(LocalDate endDate) {this.endDate = endDate;}
     public void setPrice(int price) {this.price = price;}
