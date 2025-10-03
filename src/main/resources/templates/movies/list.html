@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Movies</title>
+</head>
+<body>
+<h1>Movies</h1>
+
+<a th:href="@{/movies/ny}">+ Ny film</a>
+
+<table border="1" cellpadding="5">
+    <thead>
+    <tr>
+        <th>Titel</th>
+        <th>Sal</th>
+        <th>Premiere</th>
+        <th>Slutdato</th>
+        <th>Pris</th>
+        <th>Handling</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="m : ${movies}">
+        <td th:text="${m.movieTitle}"></td>
+        <td th:text="${m.auditorium}"></td>
+        <td th:text="${#temporals.format(m.premiereDate, 'yyyy-MM-dd')}"></td>
+        <td th:text="${#temporals.format(m.endDate, 'yyyy-MM-dd')}"></td>
+        <td th:text="${m.price}"></td>
+        <td>
+            <a th:href="@{|/movies/${m.id}/rediger|}">Rediger</a>
+            <form th:action="@{|/movies/${m.id}/slet|}" method="post" style="display:inline">
+                <button type="submit">Slet</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
