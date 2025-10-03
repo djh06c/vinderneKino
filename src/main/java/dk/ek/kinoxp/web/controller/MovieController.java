@@ -15,12 +15,37 @@ public class MovieController {
     private final MovieService service;
     public MovieController(MovieService service) {this.service = service;}
 
-
+/*
     @GetMapping
     public String List(Model model) {
         model.addAttribute("movies", service.getAllMovies());
         return "movies/list";
     }
+
+ */
+
+    @GetMapping
+    public String list(Model model) {
+        var all = service.getAllMovies();
+        var today = java.time.LocalDate.now();
+
+        var active = all.stream()
+                .filter(m -> (m.getPremiereDate() != null && !m.getPremiereDate().isAfter(today))
+                        && (m.getEndDate() != null && !m.getEndDate().isBefore(today)))
+                .toList();
+
+        var activeIds = active.stream().map(Movie::getId).collect(java.util.stream.Collectors.toSet());
+        var others = all.stream()
+                .filter(m -> m.getId() == null || !activeIds.contains(m.getId()))
+                .toList();
+
+        model.addAttribute("today", today);
+        model.addAttribute("movies", all);            // så gamle skabeloner stadig virker
+        model.addAttribute("activeMovies", active);   // sektion 1
+        model.addAttribute("otherMovies", others);    // sektion 2
+        return "movies/list";
+    }
+
 
     @GetMapping("/ny")
     public String createForm(Model model) {
