@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Forside - Biograf</title>
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}"/>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="brand">Biograf Navn</div>
+
+    <nav class="tabs">
+        <a class="tab" th:href="@{/billetter}">Billetter</a>
+        <a class="tab" th:href="@{/movies}">Ret i film</a>
+        <a class="tab" th:href="@{/mad-drikke}">Mad / Drikke</a>
+        <a class="tab" th:href="@{/kalender}">Kalender</a>
+        <a class="tab admin" th:href="@{/vagtplan}">Vagtplan</a>
+    </nav>
+
+    <div class="auth">
+        <span>Bruger: X</span>
+        <a class="btn" href="#">Log ind/ud</a>
+    </div>
+</header>
+
+<main class="content">
+    <h2>Velkommen til biografen!</h2>
+    <p>Her kan du købe billetter, bestille mad og drikke, og se vores film oversigt!.</p>
+</main>
+
+</body>
+</html>

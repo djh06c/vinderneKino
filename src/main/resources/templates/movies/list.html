@@ -1,41 +1,83 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>Movies</title>
+    <title>Film</title>
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
 </head>
 <body>
-<h1>Movies</h1>
 
-<a th:href="@{/movies/ny}">+ Ny film</a>
+<header class="topbar">
+    <div class="brand">Biograf Navn</div>
+    <nav class="tabs">
+        <a class="tab" th:href="@{/}">Forside</a>
+        <a class="tab" th:href="@{/billetter}">Billetter</a>
+        <a class="tab" th:href="@{/mad-drikke}">Mad / Drikke</a>
+        <a class="tab" th:href="@{/kalender}">Kalender</a>
+        <a class="tab admin" th:href="@{/vagtplan}">Vagtplan</a>
+        <a class="tab active" th:href="@{/movies}">Film</a>
+    </nav>
+</header>
 
-<table border="1" cellpadding="5">
-    <thead>
-    <tr>
-        <th>Titel</th>
-        <th>Sal</th>
-        <th>Premiere</th>
-        <th>Slutdato</th>
-        <th>Pris</th>
-        <th>Handling</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="m : ${movies}">
-        <td th:text="${m.movieTitle}"></td>
-        <td th:text="${m.auditorium}"></td>
-        <td th:text="${#temporals.format(m.premiereDate, 'yyyy-MM-dd')}"></td>
-        <td th:text="${#temporals.format(m.endDate, 'yyyy-MM-dd')}"></td>
-        <td th:text="${m.price}"></td>
-        <td>
-            <a th:href="@{|/movies/${m.id}/rediger|}">Rediger</a>
-            <form th:action="@{|/movies/${m.id}/slet|}" method="post" style="display:inline">
-                <button type="submit">Slet</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<main class="content">
+    <h1>Film</h1>
+
+    <section>
+        <h2 th:text="'Aktive i dag (' + ${today} + ')'">Aktive i dag</h2>
+        <p th:if="${#lists.isEmpty(activeMovies)}">Ingen film er aktive i dag.</p>
+
+        <table th:if="${!#lists.isEmpty(activeMovies)}" class="table">
+            <thead>
+            <tr><th>Titel</th><th>Sal</th><th>Premiere</th><th>Slut</th><th>Pris</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="m : ${activeMovies}">
+                <td th:text="${m.movieTitle}">Titel</td>
+                <td th:text="${m.auditorium}">Sal 1</td>
+                <td th:text="${#temporals.format(m.premiereDate, 'yyyy-MM-dd')}">2025-01-01</td>
+                <td th:text="${#temporals.format(m.endDate, 'yyyy-MM-dd')}">2025-01-31</td>
+                <td th:text="${m.price}">120</td>
+                <td>
+                    <a th:href="@{|/movies/${m.id}/rediger|}">Rediger</a>
+                    <form th:action="@{|/movies/${m.id}/slet|}" method="post" style="display:inline">
+                        <button type="submit">Slet</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <hr/>
+
+    <section>
+        <h2>Alle øvrige film</h2>
+        <a th:href="@{/movies/ny}">+ Ny film</a>
+
+        <p th:if="${#lists.isEmpty(otherMovies)}">Ingen øvrige film.</p>
+
+        <table th:if="${!#lists.isEmpty(otherMovies)}" class="table">
+            <thead>
+            <tr><th>Titel</th><th>Sal</th><th>Premiere</th><th>Slut</th><th>Pris</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="m : ${otherMovies}">
+                <td th:text="${m.movieTitle}"></td>
+                <td th:text="${m.auditorium}"></td>
+                <td th:text="${#temporals.format(m.premiereDate, 'yyyy-MM-dd')}"></td>
+                <td th:text="${#temporals.format(m.endDate, 'yyyy-MM-dd')}"></td>
+                <td th:text="${m.price}"></td>
+                <td>
+                    <a th:href="@{|/movies/${m.id}/rediger|}">Rediger</a>
+                    <form th:action="@{|/movies/${m.id}/slet|}" method="post" style="display:inline">
+                        <button type="submit">Slet</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
 
 </body>
 </html>

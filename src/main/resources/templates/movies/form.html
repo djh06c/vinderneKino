@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
 <head>
   <meta charset="UTF-8">
   <title>Movie</title>
@@ -15,6 +15,14 @@
     <input id="title" th:field="*{movieTitle}" />
     <span th:if="${#fields.hasErrors('movieTitle')}" th:errors="*{movieTitle}"></span>
   </div>
+
+  <label for="genre">Genre:</label>
+  <select id="genre" th:field="*{genre}">
+      <option th:each="g : ${T(dk.ek.kinoxp.domain.enums.Genre).values()}"
+              th:value="${g}"
+              th:text="${g}">
+      </option>
+  </select>
 
   <div>
     <label for="auditorium">Sal</label>
