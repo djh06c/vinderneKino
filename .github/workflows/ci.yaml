@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ "developer", "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4 # PIN til commit-SHA senere
+
+      - name: Setup Node
+        uses: actions/setup-node@v4 # PIN til commit-SHA senere
+        with:
+          node-version: '20'
+          cache: 'npm'
+          # Hvis I har flere package.json, kan I tilføje:
+          # cache-dependency-path: |
+          #   package-lock.json
+          #   backend/package-lock.json
+          #   frontend/package-lock.json
+
+      # Root-projekt (hvis package.json findes i roden)
+      - name: Install (root)
+        if: ${{ hashFiles('package.json') != '' }}
+        run: npm ci
+      - name: Test (root)
+        if: ${{ hashFiles('package.json') != '' }}
+        run: npm test --if-present
+      - name: Build (root)
+        if: ${{ hashFiles('package.json') != '' }}
+        run: npm run build --if-present
+
+      # Backend-projekt (hvis I har /backend)
+      - name: Install (backend)
+        if: ${{ hashFiles('backend/package.json') != '' }}
+        working-directory: backend
+        run: npm ci
+      - name: Test (backend)
+        if: ${{ hashFiles('backend/package.json') != '' }}
+        working-directory: backend
+        run: npm test --if-present
+      - name: Build (backend)
+        if: ${{ hashFiles('backend/package.json') != '' }}
+        working-directory: backend
+        run: npm run build --if-present
+
+      # Frontend-projekt (hvis I har /frontend)
+      - name: Install (frontend)
+        if: ${{ hashFiles('frontend/package.json') != '' }}
+        working-directory: frontend
+        run: npm ci
+      - name: Test (frontend)
+        if: ${{ hashFiles('frontend/package.json') != '' }}
+        working-directory: frontend
+        run: npm test --if-present
+      - name: Build (frontend)
+        if: ${{ hashFiles('frontend/package.json') != '' }}
+        working-directory: frontend
+        run: npm run build --if-present
