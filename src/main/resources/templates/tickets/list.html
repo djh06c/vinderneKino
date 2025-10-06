@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Billetter</title></head>
+<body>
+<h1>Solgte billetter</h1>
+<table>
+    <thead>
+    <tr><th>ID</th><th>Film</th><th>Type</th><th>Pris</th><th>Dato</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="t : ${tickets}">
+        <td th:text="${t.id}"></td>
+        <td th:text="${t.screening.movie.movieTitle}"></td>
+        <td th:text="${t.type}"></td>
+        <td th:text="${t.price}"></td>
+        <td th:text="${t.soldAt}"></td>
+    </tr>
+    </tbody>
+</table>
+<a th:href="@{/screenings}">Tilbage</a>
+</body>
+</html>
