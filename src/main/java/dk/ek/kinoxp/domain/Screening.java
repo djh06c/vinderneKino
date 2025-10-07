@@ -44,5 +44,10 @@ public class Screening {
     public void setTime(LocalTime time) {this.time = time;}
     public void setAvailableSeats(int availableSeats) {this.availableSeats = availableSeats;}
 
+    @jakarta.persistence.Transient
+    public Integer getCapacity() {
+        var spec = Theater.of(auditorium);
+        return (spec == null) ? null : spec.getCapacity();
+    }
 
 }

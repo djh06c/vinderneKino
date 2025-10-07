@@ -1,22 +1,29 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><title>Køb billet</title></head>
-<body>
-<h1>Køb billet</h1>
-
+<!-- templates/tickets/form.html -->
 <form th:action="@{/tickets}" th:object="${ticket}" method="post">
-    <input type="hidden" th:field="*{screening.id}" />
+    <input type="hidden" th:field="*{screeningId}"/>
+
+    <div th:if="${#fields.hasAnyErrors()}">
+        <ul><li th:each="e : ${#fields.errors('*')}" th:text="${e}"></li></ul>
+    </div>
+
+    <p>
+        Kapacitet: <b th:text="${capacity}"></b> · Solgte: <b th:text="${sold}"></b> · Ledige: <b th:text="${available}"></b>
+    </p>
+
+    <label>Række (A, B, ...):</label>
+    <input type="text" th:field="*{rowLetter}" placeholder="fx A" required/>
+
+    <label>Sæde (1..N):</label>
+    <input type="number" th:field="*{seatNumber}" min="1" required/>
+
     <label>Type:</label>
     <select th:field="*{type}">
         <option th:each="t : ${types}" th:value="${t}" th:text="${t}"></option>
     </select>
 
-    <label>Pris:</label>
-    <input type="number" th:field="*{price}" min="0"/>
-
     <button type="submit">Køb</button>
 </form>
 
-<a th:href="@{/screenings}">Tilbage</a>
-</body>
-</html>
+<script>
+
+</script>
