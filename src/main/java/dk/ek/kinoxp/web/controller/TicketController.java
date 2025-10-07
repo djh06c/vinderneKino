@@ -32,7 +32,7 @@ public class TicketController {
 
     @GetMapping("/new")
     public String createForm(@RequestParam Long screeningId, Model model) {
-        Screening s = screeningService.getById(screeningId);
+        Screening s = screeningService.get(screeningId);
         model.addAttribute("ticket", new Ticket());
         model.addAttribute("screening", s);
         model.addAttribute("types", TicketType.values());

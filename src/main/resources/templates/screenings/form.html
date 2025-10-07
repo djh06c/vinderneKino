@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
 <head>
   <meta charset="UTF-8">
-  <title th:text="${screening.id != null ? 'Rediger forestilling' : 'Ny forestilling'}"></title>
+  <title th:text="${screening.id} != null ? 'Rediger forestilling' : 'Ny forestilling'"></title>
   <link rel="stylesheet" th:href="@{/css/screeningStyle.css}">
 </head>
 <body>
@@ -15,35 +15,65 @@
 </header>
 
 <main>
-  <h1 th:text="${screening.id != null ? 'Rediger forestilling' : 'Ny forestilling'}"></h1>
+  <h1 th:text="${screening.id} != null ? 'Rediger forestilling' : 'Ny forestilling'"></h1>
 
-  <form th:action="@{${screening.id != null} ? '/screenings/' + ${screening.id} : '/screenings'}"
+  <form th:action="${screening.id} != null ? @{/screenings/{id}(id=${screening.id})} : @{/screenings}"
         th:object="${screening}" method="post">
+    <!-- PUT override når vi redigerer (hvis du bruger @PutMapping) -->
+    <input type="hidden" name="_method" value="put" th:if="${screening.id} != null"/>
+    <!-- CSRF (hvis Spring Security er aktiv) -->
+    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
+    <!-- Flyttet fejlopsamling IND i form'en, så #fields får korrekt kontekst -->
+    <div th:if="${#fields.hasAnyErrors()}"
+         style="background:#fee;border:1px solid #f99;padding:10px;margin-bottom:10px;">
+      <p><strong>Ret venligst følgende:</strong></p>
+      <ul>
+        <li th:each="e : ${#fields.errors('*')}" th:text="${e}"></li>
+      </ul>
+    </div>
+
+    <!-- Film (binder til movie.id) -->
     <label for="movie">Film:</label>
-    <select th:field="*{movie}" id="movie">
+    <select id="movie" th:field="*{movie.id}" required
+            aria-invalid="${#fields.hasErrors('movie') or #fields.hasErrors('movie.id')}">
+      <option value="">-- Vælg film --</option>
       <option th:each="m : ${movies}"
-              th:value="${m}"
-              th:text="${m.movieTitle}"
-              th:selected="${screening.movie != null and screening.movie.id == m.id}">
-      </option>
+              th:value="${m.id}"
+              th:text="${m.movieTitle}"></option>
     </select>
+    <!-- Dæk både validering på 'movie' (objekt) og 'movie.id' (felt) -->
+    <div th:if="${#fields.hasErrors('movie')}" th:errors="*{movie}" class="err"></div>
+    <div th:if="${#fields.hasErrors('movie.id')}" th:errors="*{movie.id}" class="err"></div>
     <br>
 
+    <!-- Sal -->
     <label for="auditorium">Sal:</label>
-    <input type="text" th:field="*{auditorium}" id="auditorium">
+    <select id="auditorium" th:field="*{auditorium}" required aria-invalid="${#fields.hasErrors('auditorium')}">
+      <option value="">-- Vælg sal --</option>
+      <option value="1">Sal 1</option>
+      <option value="2">Sal 2</option>
+    </select>
+    <div th:if="${#fields.hasErrors('auditorium')}" th:errors="*{auditorium}" class="err"></div>
     <br>
 
+    <!-- Dato -->
     <label for="date">Dato:</label>
-    <input type="date" th:field="*{date}" id="date">
+    <input id="date" type="date" th:field="*{date}" required aria-invalid="${#fields.hasErrors('date')}">
+    <div th:if="${#fields.hasErrors('date')}" th:errors="*{date}" class="err"></div>
     <br>
 
+    <!-- Tid -->
     <label for="time">Tidspunkt:</label>
-    <input type="time" th:field="*{time}" id="time">
+    <input id="time" type="time" th:field="*{time}" required aria-invalid="${#fields.hasErrors('time')}">
+    <div th:if="${#fields.hasErrors('time')}" th:errors="*{time}" class="err"></div>
     <br>
 
+    <!-- Ledige pladser -->
     <label for="availableSeats">Ledige pladser:</label>
-    <input type="number" th:field="*{availableSeats}" id="availableSeats" min="1">
+    <input id="availableSeats" type="number" th:field="*{availableSeats}" min="1" required
+           aria-invalid="${#fields.hasErrors('availableSeats')}">
+    <div th:if="${#fields.hasErrors('availableSeats')}" th:errors="*{availableSeats}" class="err"></div>
     <br>
 
     <button type="submit">Gem</button>

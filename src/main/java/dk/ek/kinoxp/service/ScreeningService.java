@@ -20,7 +20,7 @@ public class ScreeningService {
     }
 
     public List<Screening> getAll() {return repo.findAll();}
-    public Screening getById(Long id) {return repo.findById(id).orElseThrow();}
+    public Screening get(Long id) {return repo.findById(id).orElseThrow();}
     public Screening save(Screening screening) {return repo.save(screening);}
-    public void deleteById(Long id) {repo.deleteById(id);}
+    public void delete(Long id) {repo.deleteById(id);}
 }
