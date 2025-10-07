@@ -17,7 +17,7 @@ public class Screening {
     private Movie movie;
 
     @Column(nullable = false)
-    private String Auditorium;
+    private Integer auditorium;
 
     @Column(nullable = false)
     private LocalDate date;
@@ -31,7 +31,7 @@ public class Screening {
     //Getters
     public long getId() {return id;}
     public Movie getMovie() {return movie;}
-    public String getAuditorium() {return Auditorium;}
+    public Integer getAuditorium() {return auditorium;}
     public LocalDate getDate() {return date;}
     public LocalTime getTime() {return time;}
     public int getAvailableSeats() {return availableSeats;}
@@ -39,7 +39,7 @@ public class Screening {
     //Setters
     public void setId(long id) {this.id = id;}
     public void setMovie(Movie movie) {this.movie = movie;}
-    public void setAuditorium(String Sal) {this.Auditorium = Auditorium;}
+    public void setAuditorium(Integer auditorium) {this.auditorium = auditorium;}
     public void setDate(LocalDate date) {this.date = date;}
     public void setTime(LocalTime time) {this.time = time;}
     public void setAvailableSeats(int availableSeats) {this.availableSeats = availableSeats;}

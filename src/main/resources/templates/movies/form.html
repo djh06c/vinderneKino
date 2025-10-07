@@ -12,33 +12,35 @@
 
   <div>
     <label for="title">Titel</label>
-    <input id="title" th:field="*{movieTitle}" />
+    <input id="title" th:field="*{movieTitle}" required />
     <span th:if="${#fields.hasErrors('movieTitle')}" th:errors="*{movieTitle}"></span>
   </div>
 
   <label for="genre">Genre:</label>
-  <select id="genre" th:field="*{genre}">
+  <select id="genre" th:field="*{genre}" required>
       <option th:each="g : ${T(dk.ek.kinoxp.domain.enums.Genre).values()}"
               th:value="${g}"
-              th:text="${g}">
+              th:text="${#strings.replace(#strings.capitalize(g.name().toLowerCase()), '_', ' ')}">
       </option>
   </select>
 
+  <span th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></span>
+
   <div>
     <label for="premiere">Premiere</label>
-    <input id="premiere" type="date" th:field="*{premiereDate}" />
+    <input id="premiere" type="date" th:field="*{premiereDate}" required />
     <span th:if="${#fields.hasErrors('premiereDate')}" th:errors="*{premiereDate}"></span>
   </div>
 
   <div>
     <label for="endDate">Slutdato</label>
-    <input id="endDate" type="date" th:field="*{endDate}" />
+    <input id="endDate" type="date" th:field="*{endDate}" required />
     <span th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></span>
   </div>
 
   <div>
     <label for="price">Pris</label>
-    <input id="price" type="number" th:field="*{price}" />
+    <input id="price" type="number" th:field="*{price}" min="1" step="1" required />
     <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
   </div>
 

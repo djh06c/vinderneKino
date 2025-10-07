@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/screenings")
 public class ScreeningController {
+
     private final ScreeningService screeningService;
     private final MovieService movieService;
 
@@ -25,78 +27,142 @@ public class ScreeningController {
         this.movieService = movieService;
     }
 
+    /** Gør film-listen altid tilgængelig i views (inkl. når der returneres form ved fejl). */
+    @ModelAttribute("movies")
+    public List<Movie> movies() {
+        return movieService.getAllMovies();
+    }
 
-    //Liste af film på bestemt dato
+    // ==============================
+    // LISTE over forestillinger
+    // ==============================
     @GetMapping
     public String listForMovieOnDate(
             @RequestParam(required = false) Long movieId,
-            @RequestParam(required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             Model model) {
+
         LocalDate d = (date != null) ? date : LocalDate.now();
         model.addAttribute("date", d);
 
-        List<Movie> movies = movieService.getAllMovies();
-        model.addAttribute("movies", movies);
-
         if (movieId != null) {
+            // Hvis movieId er ugyldigt, vil din service sikkert kaste – overvej at håndtere pænt.
             model.addAttribute("selectedMovie", movieService.get(movieId));
-            List<Screening> screenings = screeningService.forMovieOnDate(movieId, d);
-            model.addAttribute("screenings", screenings);
+            model.addAttribute("screenings", screeningService.forMovieOnDate(movieId, d));
         }
         return "screenings/list";
     }
 
-    //Create screening
+    // ==============================
+    // OPRET ny forestilling (GET)
+    // ==============================
     @GetMapping("/new")
     public String createForm(Model model) {
         model.addAttribute("screening", new Screening());
-        model.addAttribute("movies", movieService.getAllMovies());
         return "screenings/form";
     }
 
+    // ==============================
+    // OPRET ny forestilling (POST)
+    // ==============================
     @PostMapping
-    public String create(@Valid @ModelAttribute("screening") Screening screening, BindingResult br, Model model) {
-        if (screening.getAvailableSeats() <= 0) {
-            br.rejectValue("availableSeats", "seats.positive", "Antal pladser skal være > 0.");
-        }
-        if (br.hasErrors()){
-            model.addAttribute("movies", movieService.getAllMovies());
+    public String create(@Valid @ModelAttribute("screening") Screening screening,
+                         BindingResult br,
+                         Model model,
+                         RedirectAttributes ra) {
+
+        validateScreeningBasics(screening, br);
+
+        if (br.hasErrors()) {
             return "screenings/form";
         }
+
+        Long movieId = screening.getMovie().getId();
+        Movie movie = movieService.get(movieId);
+        screening.setMovie(movie);
+
+        if (screening.getDate() != null &&
+                (screening.getDate().isBefore(movie.getPremiereDate())
+                        || screening.getDate().isAfter(movie.getEndDate()))) {
+            br.rejectValue("date", "date.range", "Datoen ligger uden for filmens premiereperiode.");
+            return "screenings/form";
+        }
+
         screeningService.save(screening);
-        return "redirect:/screenings/";
+        ra.addFlashAttribute("msg", "Forestillingen blev oprettet.");
+        return "redirect:/screenings?movieId=" + movie.getId() + "&date=" + screening.getDate();
     }
 
-    //Rediger i forestilling
+    // ==============================
+    // REDIGER forestilling (GET)
+    // ==============================
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
-        model.addAttribute("screening", screeningService.getById(id));
-        model.addAttribute("movies", movieService.getAllMovies());
+        model.addAttribute("screening", screeningService.get(id));
         return "screenings/form";
     }
 
-    //Opdater forestilling
+    // ==============================
+    // OPDATER forestilling (POST til /{id})
+    // ==============================
     @PostMapping("/{id}")
-    public String update(@PathVariable Long id, @Valid @ModelAttribute("screening") Screening screening,
-                         BindingResult br,Model model) {
-        if (screening.getAvailableSeats() <= 0) {
-            br.rejectValue("availableSeats", "seats.positive", "Antal pladser skal være > 0.");
-        }
-        if (br.hasErrors()){
-            model.addAttribute("movies", movieService.getAllMovies());
+    public String update(@PathVariable Long id,
+                         @Valid @ModelAttribute("screening") Screening screening,
+                         BindingResult br,
+                         Model model,
+                         RedirectAttributes ra) {
+
+        validateScreeningBasics(screening, br);
+
+        if (br.hasErrors()) {
             return "screenings/form";
         }
+
+        Long movieId = screening.getMovie().getId();
+        Movie movie = movieService.get(movieId);
+        screening.setMovie(movie);
         screening.setId(id);
+
+        if (screening.getDate() != null &&
+                (screening.getDate().isBefore(movie.getPremiereDate())
+                        || screening.getDate().isAfter(movie.getEndDate()))) {
+            br.rejectValue("date", "date.range", "Datoen ligger uden for filmens premiereperiode.");
+            return "screenings/form";
+        }
+
         screeningService.save(screening);
+        ra.addFlashAttribute("msg", "Forestillingen blev opdateret.");
+        return "redirect:/screenings?movieId=" + movie.getId() + "&date=" + screening.getDate();
+    }
+
+    // ==============================
+    // SLET forestilling
+    // ==============================
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes ra) {
+        screeningService.delete(id);
+        ra.addFlashAttribute("msg", "Forestillingen blev slettet.");
         return "redirect:/screenings";
     }
 
-    //Slet Forestilling
-    @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id) {
-        screeningService.deleteById(id);
-        return "redirect:/screenings";
+    /** Samlet basal validering, så vi undgår duplikeret kode. */
+    private static void validateScreeningBasics(Screening screening, BindingResult br) {
+
+        if (screening.getAvailableSeats() <= 0) {
+            br.rejectValue("availableSeats", "seats.positive", "Antal pladser skal være > 0.");
+        }
+
+        Integer aud = screening.getAuditorium();  // ✅ Integer nu
+        if (aud == null || (aud != 1 && aud != 2)) {
+            br.rejectValue("auditorium", "auditorium.required", "Vælg sal 1 eller 2.");
+        }
+
+        Long movieId = (screening.getMovie() != null) ? screening.getMovie().getId() : null;
+        if (movieId == null) {
+            br.rejectValue("movie", "movie.required", "Vælg en film.");
+            br.rejectValue("movie.id", "movie.required", "Vælg en film.");
+        }
     }
+
 
 }
