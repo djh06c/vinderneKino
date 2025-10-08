@@ -46,7 +46,7 @@ public class Screening {
 
     @jakarta.persistence.Transient
     public Integer getCapacity() {
-        var spec = Theater.of(auditorium);
+        var spec = Theater.of(getAuditorium());
         return (spec == null) ? null : spec.getCapacity();
     }
 

@@ -28,17 +28,24 @@
 
         <table th:if="${!#lists.isEmpty(activeMovies)}" class="table">
             <thead>
-            <tr><th>Titel</th><th>Sal</th><th>Premiere</th><th>Slut</th><th>Pris</th><th></th></tr>
+            <tr>
+                <th>Titel</th>
+                <th>Premiere</th>
+                <th>Slut</th>
+                <th>Pris</th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
             <tr th:each="m : ${activeMovies}">
                 <td th:text="${m.movieTitle}">Titel</td>
                 <td th:text="${#temporals.format(m.premiereDate, 'yyyy-MM-dd')}">2025-01-01</td>
                 <td th:text="${#temporals.format(m.endDate, 'yyyy-MM-dd')}">2025-01-31</td>
-                <td th:text="${m.price}">120</td>
+                <td th:text="${m.price}">150</td>
                 <td>
-                    <a th:href="@{|/movies/${m.id}/rediger|}">Rediger</a>
-                    <form th:action="@{|/movies/${m.id}/slet|}" method="post" style="display:inline">
+                    <!-- Ret disse URLs så de matcher jeres MovieController mappings -->
+                    <a th:href="@{/movies/{id}/edit(id=${m.id})}">Rediger</a>
+                    <form th:action="@{/movies/{id}/delete(id=${m.id})}" method="post" style="display:inline">
                         <button type="submit">Slet</button>
                     </form>
                 </td>
@@ -51,13 +58,19 @@
 
     <section>
         <h2>Alle øvrige film</h2>
-        <a th:href="@{/movies/ny}">+ Ny film</a>
+        <a th:href="@{/movies/new}">+ Ny film</a>
 
         <p th:if="${#lists.isEmpty(otherMovies)}">Ingen øvrige film.</p>
 
         <table th:if="${!#lists.isEmpty(otherMovies)}" class="table">
             <thead>
-            <tr><th>Titel</th><th>Sal</th><th>Premiere</th><th>Slut</th><th>Pris</th><th></th></tr>
+            <tr>
+                <th>Titel</th>
+                <th>Premiere</th>
+                <th>Slut</th>
+                <th>Pris</th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
             <tr th:each="m : ${otherMovies}">
@@ -66,8 +79,8 @@
                 <td th:text="${#temporals.format(m.endDate, 'yyyy-MM-dd')}"></td>
                 <td th:text="${m.price}"></td>
                 <td>
-                    <a th:href="@{|/movies/${m.id}/rediger|}">Rediger</a>
-                    <form th:action="@{|/movies/${m.id}/slet|}" method="post" style="display:inline">
+                    <a th:href="@{/movies/{id}/edit(id=${m.id})}">Rediger</a>
+                    <form th:action="@{/movies/{id}/delete(id=${m.id})}" method="post" style="display:inline">
                         <button type="submit">Slet</button>
                     </form>
                 </td>

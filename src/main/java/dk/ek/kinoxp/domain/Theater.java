@@ -6,8 +6,8 @@ public final class Theater {
     private final int seatsPerRow;
     private final int capacity;
 
-    public static final Theater SAL_1 = new Theater(20, 12);
-    public static final Theater SAL_2 = new Theater(22, 16);
+    public static final Theater SAL_1 = new Theater(20, 12); // 240 sæder
+    public static final Theater SAL_2 = new Theater(22, 16); // 352 sæder
 
     public static Theater of(Integer auditorium) {
         if (auditorium == null) return null;

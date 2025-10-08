@@ -25,7 +25,7 @@ public class Ticket {
 
     @Column(name="ticket_type", nullable=false)
     @Enumerated(EnumType.STRING)
-    private TicketType ticketType;
+    private TicketType type;
 
     // (valgfrit) kundeinfo, pris, tidspunkt osv.
 
@@ -37,6 +37,6 @@ public class Ticket {
     public void setRowLetter(String r) { this.rowLetter = r.toUpperCase(); }
     public int getSeatNumber() { return seatNumber; }
     public void setSeatNumber(int n) { this.seatNumber = n; }
-    public TicketType getTicketType() { return ticketType; }
-    public void setTicketType(TicketType t) { this.ticketType = t; }
+    public TicketType getTicketType() { return type; }
+    public void setTicketType(TicketType t) { this.type = t; }
 }

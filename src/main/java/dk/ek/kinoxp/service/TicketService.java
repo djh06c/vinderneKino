@@ -90,7 +90,7 @@ public class TicketService {
             t.setScreening(s);
             t.setRowLetter(row); // gemmes uppercase
             t.setSeatNumber(seatNumber);
-            if (type != null) t.setType(type);
+            if (type != null) t.setTicketType(type);
             return ticketRepo.save(t);
         } catch (DataIntegrityViolationException e) {
             // En anden transaktion snuppede sædet imens
@@ -123,7 +123,7 @@ public class TicketService {
                 t.setScreening(s);
                 t.setRowLetter(rs.row);
                 t.setSeatNumber(rs.seat);
-                if (type != null) t.setType(type);
+                if (type != null) t.setTicketType(type);
                 out.add(ticketRepo.save(t));
             }
             return out;
@@ -140,7 +140,7 @@ public class TicketService {
         // hvis Ticket.type er påkrævet, så brug overloaden med type
         TicketType type = null;
         try {
-            type = ticket.getType();
+            type = ticket.getTicketType();
         } catch (Exception ignored) {}
         return sellSeat(ticket.getScreening().getId(), ticket.getRowLetter(), ticket.getSeatNumber(), type);
     }
