@@ -45,3 +45,5 @@ jobs:
         run: |
           docker push ${{ steps.img.outputs.IMAGE }}:sha-${{ github.sha }}
           docker push ${{ steps.img.outputs.IMAGE }}:latest
+
+
