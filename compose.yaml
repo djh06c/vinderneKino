@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: kinoxp-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - db
+    networks:
+      - kinoxp-net
+
+  db:
+    image: mysql:8.0
+    container_name: kinoxp-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: kinoxp
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - kinoxp-net
+
+volumes:
+  db_data:
+
+networks:
+  kinoxp-net:
