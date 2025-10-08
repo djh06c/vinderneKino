@@ -2,6 +2,7 @@ package dk.ek.kinoxp.web.controller;
 
 import dk.ek.kinoxp.domain.Movie;
 import dk.ek.kinoxp.domain.Screening;
+import dk.ek.kinoxp.domain.Theater;
 import dk.ek.kinoxp.service.MovieService;
 import dk.ek.kinoxp.service.ScreeningService;
 import jakarta.validation.Valid;
@@ -27,7 +28,7 @@ public class ScreeningController {
         this.movieService = movieService;
     }
 
-    /** Gør film-listen altid tilgængelig i views (inkl. når der returneres form ved fejl). */
+    /** Gør film-listen altid tilgængelig i views (inkl. ved valideringsfejl). */
     @ModelAttribute("movies")
     public List<Movie> movies() {
         return movieService.getAllMovies();
@@ -39,19 +40,24 @@ public class ScreeningController {
     @GetMapping
     public String listForMovieOnDate(
             @RequestParam(required = false) Long movieId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             Model model) {
 
         LocalDate d = (date != null) ? date : LocalDate.now();
         model.addAttribute("date", d);
 
+        // ← Eksplicit: sørg for at dropdown altid har data
+        model.addAttribute("movies", movieService.getAllMovies());
+
         if (movieId != null) {
-            // Hvis movieId er ugyldigt, vil din service sikkert kaste – overvej at håndtere pænt.
-            model.addAttribute("selectedMovie", movieService.get(movieId));
+            Movie selected = movieService.get(movieId);
+            model.addAttribute("selectedMovie", selected);
             model.addAttribute("screenings", screeningService.forMovieOnDate(movieId, d));
         }
         return "screenings/list";
     }
+
 
     // ==============================
     // OPRET ny forestilling (GET)
@@ -71,16 +77,22 @@ public class ScreeningController {
                          Model model,
                          RedirectAttributes ra) {
 
+        // Sæt/plafondér ledige pladser ift. salens kapacitet
+        autoFillAndClampSeatsToCapacity(screening);
+
+        // Basal validering (inkl. seats <= capacity)
         validateScreeningBasics(screening, br);
 
         if (br.hasErrors()) {
             return "screenings/form";
         }
 
+        // Knyt movie-entity (ID er tjekket i validateScreeningBasics)
         Long movieId = screening.getMovie().getId();
         Movie movie = movieService.get(movieId);
         screening.setMovie(movie);
 
+        // Dato skal ligge i filmens periode
         if (screening.getDate() != null &&
                 (screening.getDate().isBefore(movie.getPremiereDate())
                         || screening.getDate().isAfter(movie.getEndDate()))) {
@@ -112,6 +124,12 @@ public class ScreeningController {
                          Model model,
                          RedirectAttributes ra) {
 
+        screening.setId(id);
+
+        // Sæt/plafondér ledige pladser ift. salens kapacitet
+        autoFillAndClampSeatsToCapacity(screening);
+
+        // Basal validering (inkl. seats <= capacity)
         validateScreeningBasics(screening, br);
 
         if (br.hasErrors()) {
@@ -121,8 +139,8 @@ public class ScreeningController {
         Long movieId = screening.getMovie().getId();
         Movie movie = movieService.get(movieId);
         screening.setMovie(movie);
-        screening.setId(id);
 
+        // Dato skal ligge i filmens periode
         if (screening.getDate() != null &&
                 (screening.getDate().isBefore(movie.getPremiereDate())
                         || screening.getDate().isAfter(movie.getEndDate()))) {
@@ -145,24 +163,54 @@ public class ScreeningController {
         return "redirect:/screenings";
     }
 
-    /** Samlet basal validering, så vi undgår duplikeret kode. */
+    // ==============================
+    // KØB-adapter (praktisk link fra liste/form)
+    // ==============================
+    @GetMapping("/{id}/buy")
+    public String goBuy(@PathVariable Long id) {
+        return "redirect:/tickets/new?screeningId=" + id;
+    }
+
+    // ------------------ Helpers ------------------
+
+    /** Sæt tom/0 'availableSeats' til salens kapacitet og clamp til max. */
+    private static void autoFillAndClampSeatsToCapacity(Screening s) {
+        var spec = Theater.of(s.getAuditorium());
+        if (spec == null) return;
+
+        if (s.getAvailableSeats() <= 0) {
+            s.setAvailableSeats(spec.getCapacity());
+        }
+        if (s.getAvailableSeats() > spec.getCapacity()) {
+            s.setAvailableSeats(spec.getCapacity());
+        }
+    }
+
+    /** Basal validering for sal, film og pladser (inkl. seats <= capacity). */
     private static void validateScreeningBasics(Screening screening, BindingResult br) {
 
-        if (screening.getAvailableSeats() <= 0) {
-            br.rejectValue("availableSeats", "seats.positive", "Antal pladser skal være > 0.");
-        }
-
-        Integer aud = screening.getAuditorium();  // ✅ Integer nu
+        // Auditorium
+        Integer aud = screening.getAuditorium();
         if (aud == null || (aud != 1 && aud != 2)) {
             br.rejectValue("auditorium", "auditorium.required", "Vælg sal 1 eller 2.");
         }
 
+        // Movie
         Long movieId = (screening.getMovie() != null) ? screening.getMovie().getId() : null;
         if (movieId == null) {
             br.rejectValue("movie", "movie.required", "Vælg en film.");
             br.rejectValue("movie.id", "movie.required", "Vælg en film.");
         }
+
+        // Seats > 0 og ikke over kapacitet (hvis sal er valid)
+        if (screening.getAvailableSeats() <= 0) {
+            br.rejectValue("availableSeats", "seats.positive", "Antal pladser skal være > 0.");
+        }
+
+        var spec = Theater.of(aud);
+        if (spec != null && screening.getAvailableSeats() > spec.getCapacity()) {
+            br.rejectValue("availableSeats", "seats.overCapacity",
+                    "Maks i denne sal er " + spec.getCapacity() + " pladser.");
+        }
     }
-
-
 }
