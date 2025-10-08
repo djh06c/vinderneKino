@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Nyt kiosksalg</title></head>
+<body>
+<h1>Nyt kiosksalg</h1>
+
+<p th:if="${error}" style="color:red" th:text="${error}"></p>
+
+<form th:action="@{/sales}" method="post">
+    <table>
+        <thead>
+        <tr><th>Vare</th><th>Pris</th><th>Antal</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="i : ${items}">
+            <td th:text="${i.name}"></td>
+            <td th:text="${i.price} + ' kr'"></td>
+            <!-- VIGTIGT: korrekt name via th:name -->
+            <td><input type="number" min="0" value="0" th:name="|qty_${i.id}|"/></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <button type="submit">Registrér salg</button>
+</form>
+
+<p><a th:href="@{/sales}">Tilbage til salgsliste</a></p>
+</body>
+</html>

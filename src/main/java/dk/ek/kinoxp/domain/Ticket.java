@@ -24,7 +24,7 @@ public class Ticket {
 
     private LocalDateTime soldAt = LocalDateTime.now();
 
-    // Getters & Setters
+
     public Long getId() { return id; }
     public Screening getScreening() { return screening; }
     public TicketType getType() { return type; }
