@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Køb billet</title></head>
+<body>
+<h1>Køb billet</h1>
+
+<form th:action="@{/tickets}" th:object="${ticket}" method="post">
+    <input type="hidden" th:field="*{screening.id}" />
+    <label>Type:</label>
+    <select th:field="*{type}">
+        <option th:each="t : ${types}" th:value="${t}" th:text="${t}"></option>
+    </select>
+
+    <label>Pris:</label>
+    <input type="number" th:field="*{price}" min="0"/>
+
+    <button type="submit">Køb</button>
+</form>
+
+<a th:href="@{/screenings}">Tilbage</a>
+</body>
+</html>

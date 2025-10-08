@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head>
+  <meta charset="UTF-8">
+  <title>Movie</title>
+</head>
+<body>
+<h1 th:text="${movie.id} == null ? 'Ny film' : 'Rediger film'"></h1>
+
+<form th:action="${movie.id} == null ? @{/movies} : @{|/movies/${movie.id}|}"
+      th:object="${movie}" method="post">
+
+  <div>
+    <label for="title">Titel</label>
+    <input id="title" th:field="*{movieTitle}" required />
+    <span th:if="${#fields.hasErrors('movieTitle')}" th:errors="*{movieTitle}"></span>
+  </div>
+
+  <label for="genre">Genre:</label>
+  <select id="genre" th:field="*{genre}" required>
+      <option th:each="g : ${T(dk.ek.kinoxp.domain.enums.Genre).values()}"
+              th:value="${g}"
+              th:text="${#strings.replace(#strings.capitalize(g.name().toLowerCase()), '_', ' ')}">
+      </option>
+  </select>
+
+  <span th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></span>
+
+  <div>
+    <label for="premiere">Premiere</label>
+    <input id="premiere" type="date" th:field="*{premiereDate}" required />
+    <span th:if="${#fields.hasErrors('premiereDate')}" th:errors="*{premiereDate}"></span>
+  </div>
+
+  <div>
+    <label for="endDate">Slutdato</label>
+    <input id="endDate" type="date" th:field="*{endDate}" required />
+    <span th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></span>
+  </div>
+
+  <div>
+    <label for="price">Pris</label>
+    <input id="price" type="number" th:field="*{price}" min="1" step="1" required />
+    <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+  </div>
+
+  <div>
+    <button type="submit">Gem</button>
+  </div>
+</form>
+
+<a th:href="@{/movies}">Tilbage til oversigt</a>
+
+</body>
+</html>

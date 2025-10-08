@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Screenings</title>
+  <link rel="stylesheet" th:href="@{/css/screeningStyle.css}">
+</head>
+<body>
+<header>
+  <nav>
+    <a th:href="@{/}">Forside</a>
+    <a th:href="@{/movies}">Film</a>
+    <a th:href="@{/screenings}">Forestillinger</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Forestillinger</h1>
+
+  <form method="get" th:action="@{/screenings}">
+    <label for="movie">Vælg film:</label>
+    <select name="movieId" id="movie">
+      <option th:each="m : ${movies}"
+              th:value="${m.id}"
+              th:text="${m.movieTitle}"
+              th:selected="${selectedMovie != null and selectedMovie.id == m.id}">
+      </option>
+    </select>
+
+    <label for="date">Dato:</label>
+    <input type="date" id="date" name="date" th:value="${date}">
+
+    <button type="submit">Vis forestillinger</button>
+  </form>
+
+  <div th:if="${screenings != null}">
+    <h2 th:text="'Visninger af ' + ${selectedMovie.movieTitle} + ' d. ' + ${date}"></h2>
+
+    <table>
+      <thead>
+      <tr>
+        <th>Tidspunkt</th>
+        <th>Sal</th>
+        <th>Ledige pladser</th>
+        <th>Handling</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="s : ${screenings}">
+        <td th:text="${s.time}"></td>
+        <td th:text="${s.auditorium}"></td>
+        <td th:text="${s.availableSeats}"></td>
+        <td>
+          <a th:href="@{|/screenings/${s.id}/edit|}">Rediger</a>
+          <form th:action="@{|/screenings/${s.id}/delete|}" method="post" style="display:inline;">
+            <button type="submit">Slet</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><a th:href="@{/screenings/new}">➕ Opret ny forestilling</a></p>
+</main>
+</body>
+</html>
