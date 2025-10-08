@@ -3,53 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <title>Movie</title>
+  <link rel="stylesheet" th:href="@{/css/Style.css}">
 </head>
 <body>
-<h1 th:text="${movie.id} == null ? 'Ny film' : 'Rediger film'"></h1>
 
-<form th:action="${movie.id} == null ? @{/movies} : @{|/movies/${movie.id}|}"
-      th:object="${movie}" method="post">
+<h1 th:text="${movie.id == null ? 'Ny film' : 'Rediger film'}"></h1>
 
-  <div>
-    <label for="title">Titel</label>
-    <input id="title" th:field="*{movieTitle}" required />
-    <span th:if="${#fields.hasErrors('movieTitle')}" th:errors="*{movieTitle}"></span>
-  </div>
+<!-- Sæt formens action i en variabel, så @{} kun får ét simpelt udtryk -->
+<div th:with="formPath=${(movie.id == null) ? '/movies' : '/movies/' + movie.id}">
+  <form id="movieForm"
+        th:object="${movie}"
+        th:action="@{${formPath}}"
+        method="post">
 
-  <label for="genre">Genre:</label>
-  <select id="genre" th:field="*{genre}" required>
-      <option th:each="g : ${T(dk.ek.kinoxp.domain.enums.Genre).values()}"
-              th:value="${g}"
-              th:text="${#strings.replace(#strings.capitalize(g.name().toLowerCase()), '_', ' ')}">
-      </option>
-  </select>
+    <!-- CSRF hvis du bruger Spring Security -->
+    <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"> -->
 
-  <span th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></span>
+    <div>
+      <label for="title">Titel</label>
+      <input id="title" th:field="*{movieTitle}" required />
+      <span th:if="${#fields.hasErrors('movieTitle')}" th:errors="*{movieTitle}"></span>
+    </div>
 
-  <div>
-    <label for="premiere">Premiere</label>
-    <input id="premiere" type="date" th:field="*{premiereDate}" required />
-    <span th:if="${#fields.hasErrors('premiereDate')}" th:errors="*{premiereDate}"></span>
-  </div>
+    <div>
+      <label for="genre">Genre</label>
+      <select id="genre" th:field="*{genre}" required>
+        <option value="" th:if="${movie.genre == null}" disabled selected>Vælg genre…</option>
+        <option th:each="g : ${T(dk.ek.kinoxp.domain.enums.Genre).values()}"
+                th:value="${g}"
+                th:text="${#strings.replace(#strings.capitalize(g.name().toLowerCase()), '_', ' ')}">
+        </option>
+      </select>
+      <span th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></span>
+    </div>
 
-  <div>
-    <label for="endDate">Slutdato</label>
-    <input id="endDate" type="date" th:field="*{endDate}" required />
-    <span th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></span>
-  </div>
+    <div>
+      <label for="premiere">Premiere</label>
+      <input id="premiere" type="date" th:field="*{premiereDate}" required />
+      <span th:if="${#fields.hasErrors('premiereDate')}" th:errors="*{premiereDate}"></span>
+    </div>
 
-  <div>
-    <label for="price">Pris</label>
-    <input id="price" type="number" th:field="*{price}" min="1" step="1" required />
-    <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
-  </div>
+    <div>
+      <label for="endDate">Slutdato</label>
+      <input id="endDate" type="date" th:field="*{endDate}" required />
+      <span th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></span>
+    </div>
 
-  <div>
-    <button type="submit">Gem</button>
-  </div>
-</form>
+    <div>
+      <label for="price">Pris</label>
+      <input id="price" type="number" th:field="*{price}" min="1" step="1" required />
+      <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+    </div>
 
-<a th:href="@{/movies}">Tilbage til oversigt</a>
+    <div class="form-actions">
+      <button type="submit">Gem</button>
+      <a th:href="@{/movies}" class="link-muted">Annullér</a>
+    </div>
+  </form>
+</div>
+
+<p><a th:href="@{/movies}">← Tilbage til oversigt</a></p>
 
 </body>
 </html>

@@ -40,11 +40,15 @@ public class ScreeningController {
     @GetMapping
     public String listForMovieOnDate(
             @RequestParam(required = false) Long movieId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             Model model) {
 
         LocalDate d = (date != null) ? date : LocalDate.now();
         model.addAttribute("date", d);
+
+        // ← Eksplicit: sørg for at dropdown altid har data
+        model.addAttribute("movies", movieService.getAllMovies());
 
         if (movieId != null) {
             Movie selected = movieService.get(movieId);
@@ -53,6 +57,7 @@ public class ScreeningController {
         }
         return "screenings/list";
     }
+
 
     // ==============================
     // OPRET ny forestilling (GET)
