@@ -29,7 +29,7 @@ public class Ticket {
 
     // (valgfrit) kundeinfo, pris, tidspunkt osv.
 
-    // getters/setters
+
     public Long getId() { return id; }
     public Screening getScreening() { return screening; }
     public void setScreening(Screening s) { this.screening = s; }

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Registrerede salg</title></head>
+<body>
+<h1>Registrerede salg</h1>
+
+<p th:if="${message}" style="color:green" th:text="${message}"></p>
+
+<table>
+    <thead>
+    <tr><th>ID</th><th>Dato</th><th>Total</th><th>Linjer</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="s : ${sales}">
+        <td th:text="${s.id}"></td>
+        <td th:text="${s.soldAt}"></td>
+        <td th:text="${s.total} + ' kr'"></td>
+        <td>
+            <ul>
+                <li th:each="l : ${s.lines}"
+                    th:text="${l.item.name} + ' x ' + ${l.quantity} + ' = ' + ${l.lineTotal} + ' kr'"></li>
+            </ul>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a th:href="@{/sales/new}">Nyt salg</a></p>
+</body>
+</html>
