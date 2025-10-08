@@ -1,0 +1,44 @@
+name: Publish Docker image
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-test-push:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Make mvnw executable
+        run: chmod +x mvnw
+
+      - name: Build & Test
+        run: ./mvnw -B -DskipITs verify
+
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Compute image name (lowercase)
+        id: img
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
+
+      - name: Build image
+        run: docker build -t ${{ steps.img.outputs.IMAGE }}:sha-${{ github.sha }} -t ${{ steps.img.outputs.IMAGE }}:latest .
+
+      - name: Push image
+        run: |
+          docker push ${{ steps.img.outputs.IMAGE }}:sha-${{ github.sha }}
+          docker push ${{ steps.img.outputs.IMAGE }}:latest
