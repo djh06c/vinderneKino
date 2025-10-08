@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Varer</title></head>
+<body>
+<h1>Varer</h1>
+
+<table>
+    <thead>
+    <tr><th>Navn</th><th>Kategori</th><th>Pris</th><th>Handling</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="i : ${items}">
+        <td th:text="${i.name}"></td>
+        <td th:text="${i.category}"></td>
+        <td th:text="${i.price} + ' kr'"></td>
+        <td>
+            <a th:href="@{|/items/${i.id}/edit|}">Redigér</a>
+            <form th:action="@{|/items/${i.id}/delete|}" method="post" style="display:inline">
+                <button type="submit" onclick="return confirm('Slet varen?')">Slet</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a th:href="@{/items/new}">Opret ny vare</a></p>
+</body>
+</html>

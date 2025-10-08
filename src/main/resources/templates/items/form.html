@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Vare</title></head>
+<body>
+<h1 th:text="${item.id == null ? 'Ny vare' : 'Redigér vare'}"></h1>
+
+<form th:action="@{${item.id == null} ? '/items' : '/items/' + ${item.id}}"
+      th:object="${item}" method="post">
+    <p>Navn: <input th:field="*{name}" required /></p>
+    <p>Kategori:
+        <select th:field="*{category}">
+            <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"></option>
+        </select>
+    </p>
+    <p>Pris (DKK): <input type="number" th:field="*{price}" min="1" required /></p>
+
+    <button type="submit">Gem</button>
+</form>
+
+<p><a th:href="@{/items}">Tilbage</a></p>
+</body>
+</html>
