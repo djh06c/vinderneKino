@@ -1,49 +1,53 @@
-name: Publish Docker image
+name: Publish Docker image to GHCR
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
   packages: write
 
-jobs:
-  build-test-push:
-    runs-on: ubuntu-24.04
-    env:
-      SPRING_PROFILES_ACTIVE: dev   # kør tests mod H2 (dev-profil)
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
 
+jobs:
+  publish:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7 (pinned)
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - name: Set up Temurin JDK 21 + cache Maven
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4 (pinned)
         with:
           distribution: temurin
           java-version: '21'
           cache: maven
 
-      - name: Make mvnw executable
-        run: chmod +x mvnw
+      - name: Run tests
+        run: mvn -B -ntp test
 
-      - name: Build & Test
-        run: ./mvnw -B -Dspring.profiles.active=dev -DskipITs verify
+      - name: Compute image name (lowercase) + sha tag
+        id: meta
+        run: |
+          echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+          echo "SHA_TAG=sha-${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
 
       - name: Login to GHCR
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3 (pinned)
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Compute image name (lowercase)
-        id: img
-        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
-
-      - name: Build image
-        run: docker build -t ${{ steps.img.outputs.IMAGE }}:sha-${{ github.sha }} -t ${{ steps.img.outputs.IMAGE }}:latest .
-
-      - name: Push image
-        run: |
-          docker push ${{ steps.img.outputs.IMAGE }}:sha-${{ github.sha }}
-          docker push ${{ steps.img.outputs.IMAGE }}:latest
-
-
+      - name: Build & Push
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6 (pinned)
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.IMAGE }}:latest
+            ${{ steps.meta.outputs.IMAGE }}:${{ steps.meta.outputs.SHA_TAG }}
