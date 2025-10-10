@@ -168,8 +168,9 @@ public class ScreeningController {
     // ==============================
     @GetMapping("/{id}/buy")
     public String goBuy(@PathVariable Long id) {
-        return "redirect:/tickets/new?screeningId=" + id;
+        return "redirect:/screenings/" + id + "/seats";
     }
+
 
     // ------------------ Helpers ------------------
 
