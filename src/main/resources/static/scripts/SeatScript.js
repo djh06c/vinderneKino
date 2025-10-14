@@ -9,7 +9,7 @@ function getScreeningId() {
 const state = { screeningId: getScreeningId(), needed: 2, seats: [] };
 let busy = false; // simple klik/req-lås
 
-// ---------------- API ----------------
+
 async function loadSeats() {
     try {
         const res = await fetch(`/api/screenings/${state.screeningId}/seats`);
@@ -81,31 +81,48 @@ function render() {
     const root = document.getElementById('seating');
     if (!root) return;
 
-    // tomt dataset guard
     if (!state.seats || state.seats.length === 0) {
         root.innerHTML = '';
         updateNeeded();
         return;
     }
 
+    const gap  = 6;
     const maxNum = Math.max(...state.seats.map(s => s.number));
+
+    // gør grid’et mindst ~600px bredt ved at øge seat-størrelsen lidt
+    const targetMinPx = 600;
+    let cell = 28;
+    let gridPx = maxNum * cell + (maxNum - 1) * gap;
+    if (gridPx < targetMinPx) {
+        cell = Math.min(44, Math.floor((targetMinPx - (maxNum - 1) * gap) / maxNum));
+        gridPx = maxNum * cell + (maxNum - 1) * gap;
+    }
+
+    // grid-opsætning + fast bredde (så centrerer det)
     root.style.display = 'grid';
-    root.style.gridTemplateColumns = `repeat(${maxNum}, 28px)`;
-    root.style.gap = '6px';
+    root.style.gridTemplateColumns = `repeat(${maxNum}, ${cell}px)`;
+    root.style.gap = `${gap}px`;
+    root.style.width = `${gridPx}px`;
+    root.style.margin = '0 auto';
+
+    // match “lærred” til samme bredde
+    const screen = document.querySelector('.screen');
+    if (screen) screen.style.width = `${gridPx}px`;
+
     root.innerHTML = '';
 
-    // rækkefølge A..Z
     const rows = Array.from(new Set(state.seats.map(s => s.row))).sort();
-    const rowIndex = new Map(rows.map((r,i)=>[r,i])); // A->0, B->1,...
+    const rowIndex = new Map(rows.map((r,i)=>[r,i]));
 
     for (const s of state.seats) {
         const div = document.createElement('div');
         div.className = `seat ${cssClass(s.status)}`;
-        div.style.width = '28px';
-        div.style.height = '28px';
+        div.style.width = `${cell}px`;
+        div.style.height = `${cell}px`;
         div.style.borderRadius = '6px';
-        div.style.gridColumnStart = s.number;                     // 1-baseret
-        div.style.gridRowStart = (rowIndex.get(s.row) ?? 0) + 1;  // 1-baseret
+        div.style.gridColumnStart = s.number;
+        div.style.gridRowStart = (rowIndex.get(s.row) ?? 0) + 1;
         div.title = `Række ${s.row}, Sæde ${s.number}`;
         div.onclick = () => toggleSeat(s);
         root.appendChild(div);
@@ -113,6 +130,7 @@ function render() {
 
     updateNeeded();
 }
+
 
 // “Find bedste sæder”
 function findBestBlock(seats, N) {
@@ -163,6 +181,7 @@ function toast(msg){
     setTimeout(()=> t.style.display='none', 2000);
 }
 
+
 // ---------------- Bindings & init ----------------
 document.getElementById('inc')?.addEventListener('click', () => { state.needed++; updateNeeded(); });
 document.getElementById('dec')?.addEventListener('click', () => { state.needed = Math.max(1, state.needed-1); updateNeeded(); });
@@ -173,3 +192,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSeats();
     setInterval(loadSeats, 5000);
 });
+
+

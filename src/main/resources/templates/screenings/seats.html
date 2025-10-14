@@ -3,20 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>Sædevælger</title>
-    <style>
-        body { font-family: system-ui, Arial, sans-serif; margin: 20px; }
-        #toolbar { display:flex; gap:10px; align-items:center; margin-bottom:12px; }
-        #seating { display:grid; gap:6px; }
-        .seat { width:28px; height:28px; border-radius:6px; cursor:pointer; }
-        .available { background:#e2e8f0; }
-        .mine { background:#60a5fa; }
-        .held { background:#f59e0b; }
-        .sold { background:#ef4444; opacity:.6; cursor:not-allowed; }
-        .screen { margin:10px 0 16px; text-align:center; opacity:.7; }
-        button { padding:6px 10px; border-radius:6px; border:1px solid #d1d5db; background:white; cursor:pointer; }
-        button.primary { background:#111827; color:white; border-color:#111827; }
-        #toast { position:fixed; right:16px; bottom:16px; padding:10px 12px; background:#111827; color:white; border-radius:8px; display:none; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/Style.css}">
 </head>
 <body>
 <h1>Vælg sæder</h1>
@@ -29,19 +16,16 @@
     <span id="status"></span>
     <button id="checkout" class="primary">Gennemfør</button>
 </div>
-
-<div class="screen">Lærred</div>
-
-<!-- screeningId fra controller -->
-<div id="seating" th:attr="data-screening-id=${screeningId}"></div>
-
+<div class ="auditorium">
+    <div class="screen">Lærred</div>
+    <div id="seating" th:attr="data-screening-id=${screeningId}"></div>
+</div>
 <div id="toast"></div>
 
 <script th:inline="javascript">
     const screeningId = /*[[${screeningId}]]*/ 1;
 </script>
 
-<!-- Korrekt sti og defer -->
 <script src="/scripts/SeatScript.js" defer></script>
 </body>
 </html>
