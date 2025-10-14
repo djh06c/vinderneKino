@@ -9,6 +9,7 @@
     <th>Start</th>
     <th>Slut</th>
     <th>Medarbejder</th>
+    <th>Handlinger</th>
   </tr>
   </thead>
   <tbody>
@@ -17,6 +18,12 @@
     <td th:text="${s.startTime}"></td>
     <td th:text="${s.endTime}"></td>
     <td th:text="${s.employee != null ? s.employee.name : '—'}"></td>
+    <td>
+      <a th:href="@{/shifts/{id}/edit(id=${s.id})}">Rediger</a>
+      <form th:action="@{/shifts/{id}/delete(id=${s.id})}" method="post" style="display:inline">
+        <button type="submit">Slet</button>
+      </form>
+    </td>
   </tr>
   </tbody>
 </table>

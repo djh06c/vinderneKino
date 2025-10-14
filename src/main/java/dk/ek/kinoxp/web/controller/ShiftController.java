@@ -46,4 +46,34 @@ public class ShiftController {
         shifts.save(s);
         return "redirect:/shifts";
     }
+
+    @GetMapping("/{id}/edit")
+    public String edit(@PathVariable Long id, Model m) {
+        m.addAttribute("shift", shifts.findById(id).orElseThrow());
+        m.addAttribute("employees", employees.findAll());
+        return "shifts/form";
+    }
+
+    @PostMapping("/{id}")
+    public String update(@PathVariable Long id,
+                         @Valid @ModelAttribute("shift") Shift s,
+                         BindingResult br, Model m) {
+        if (s.getEndTime()!=null && s.getStartTime()!=null && !s.getEndTime().isAfter(s.getStartTime())) {
+            br.rejectValue("endTime","time.order","Slut skal være efter start");
+        }
+        if (br.hasErrors()) {
+            m.addAttribute("employees", employees.findAll());
+            return "shifts/form";
+        }
+        s.setId(id);
+        shifts.save(s);
+        return "redirect:/shifts";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id) {
+        shifts.deleteById(id);
+        return "redirect:/shifts";
+    }
+
 }
