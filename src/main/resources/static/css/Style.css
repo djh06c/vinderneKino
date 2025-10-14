@@ -21,6 +21,7 @@ body{
     color: var(--text);
 }
 
+
 /* ====== Topbar (din eksisterende markup) ====== */
 .topbar{
     display:flex; align-items:center; justify-content:space-between;
@@ -159,3 +160,52 @@ button:hover{ background:var(--primary-700) }
 /* “Annullér”-link mere afdæmpet */
 #movieForm .link-muted{ color: var(--muted); text-decoration: none; }
 #movieForm .link-muted:hover{ text-decoration: underline; }
+
+/* --- seats page --- */
+.auditorium{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+    margin-top:16px;
+}
+
+#seating{
+    display:grid;
+    gap:6px;
+    margin:0 auto;
+}
+
+.seat {
+    width:28px;
+    height:28px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.seat.available { background:#e2e8f0; }     /* ledig */
+.seat.mine      { background:#60a5fa; }     /* valgt af mig */
+.seat.held      { background:#f59e0b; }     /* holdt af andre */
+.seat.sold      { background:#ef4444; opacity:.6; cursor:not-allowed; } /* solgt */
+
+.screen{
+    text-align:center;
+    color:#374151;
+    opacity:.9;
+    font-size:14px;
+    position:relative;
+    overflow: visible;
+    pointer-events: none;
+}
+.screen::before{
+    content:"";
+    display:block;
+    height:8px;
+    border-radius:999px;
+    background:linear-gradient(90deg,#e5e7eb,#cbd5e1,#e5e7eb);
+    margin-bottom:6px;
+    width:calc(100% + 320px);
+    margin-left:-160px;
+}
+
+
