@@ -1,0 +1,14 @@
+<h1 th:text="${employee.id == null ? 'Ny medarbejder' : 'Redigér medarbejder'}"></h1>
+<form th:action="@{${employee.id == null ? '/employees' : '/employees/' + employee.id}}"
+      th:object="${employee}" method="post">
+  <label>Navn</label>
+  <input th:field="*{name}" required />
+  <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+
+  <label>Rolle</label>
+  <input th:field="*{role}" required />
+  <div th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+
+  <button type="submit">Gem</button>
+  <a th:href="@{/employees}">Annullér</a>
+</form>

@@ -1,0 +1,17 @@
+<h1>Medarbejdere</h1>
+<p><a th:href="@{/employees/new}">➕ Ny medarbejder</a></p>
+<table class="table">
+  <thead><tr><th>Navn</th><th>Rolle</th><th>Handling</th></tr></thead>
+  <tbody>
+  <tr th:each="e : ${employees}">
+    <td th:text="${e.name}"></td>
+    <td th:text="${e.role}"></td>
+    <td>
+      <a th:href="@{/employees/{id}/edit(id=${e.id})}">Rediger</a>
+      <form th:action="@{/employees/{id}/delete(id=${e.id})}" method="post" style="display:inline">
+        <button>Slet</button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
