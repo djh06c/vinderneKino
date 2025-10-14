@@ -1,0 +1,29 @@
+<h1>Vagtplan</h1>
+
+<p><a th:href="@{/shifts/new}">➕ Ny vagt</a></p>
+
+<table class="table">
+  <thead>
+  <tr>
+    <th>Dato</th>
+    <th>Start</th>
+    <th>Slut</th>
+    <th>Medarbejder</th>
+    <th>Handlinger</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="s : ${shifts}">
+    <td th:text="${s.date}"></td>
+    <td th:text="${s.startTime}"></td>
+    <td th:text="${s.endTime}"></td>
+    <td th:text="${s.employee != null ? s.employee.name : '—'}"></td>
+    <td>
+      <a th:href="@{/shifts/{id}/edit(id=${s.id})}">Rediger</a>
+      <form th:action="@{/shifts/{id}/delete(id=${s.id})}" method="post" style="display:inline">
+        <button type="submit">Slet</button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
