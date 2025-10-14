@@ -1,0 +1,22 @@
+<h1>Vagtplan</h1>
+
+<p><a th:href="@{/shifts/new}">➕ Ny vagt</a></p>
+
+<table class="table">
+  <thead>
+  <tr>
+    <th>Dato</th>
+    <th>Start</th>
+    <th>Slut</th>
+    <th>Medarbejder</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="s : ${shifts}">
+    <td th:text="${s.date}"></td>
+    <td th:text="${s.startTime}"></td>
+    <td th:text="${s.endTime}"></td>
+    <td th:text="${s.employee != null ? s.employee.name : '—'}"></td>
+  </tr>
+  </tbody>
+</table>
