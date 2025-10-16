@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
 <head>
   <meta charset="UTF-8">
   <title th:text="${screening.id != null ? 'Rediger forestilling' : 'Ny forestilling'}"></title>
@@ -17,37 +17,92 @@
 <main>
   <h1 th:text="${screening.id != null ? 'Rediger forestilling' : 'Ny forestilling'}"></h1>
 
-  <form th:action="@{${screening.id != null} ? '/screenings/' + ${screening.id} : '/screenings'}"
-        th:object="${screening}" method="post">
+  <!-- Lav en variabel til formens action for at undgå @{} inde i ${} -->
+  <div th:with="formPath=${(screening.id != null) ? '/screenings/' + screening.id : '/screenings'}">
+    <form th:object="${screening}" th:action="@{${formPath}}" method="post" id="screeningForm">
 
-    <label for="movie">Film:</label>
-    <select th:field="*{movie}" id="movie">
-      <option th:each="m : ${movies}"
-              th:value="${m}"
-              th:text="${m.movieTitle}"
-              th:selected="${screening.movie != null and screening.movie.id == m.id}">
-      </option>
-    </select>
-    <br>
+      <!-- PUT override kun hvis du faktisk bruger @PutMapping server-side -->
+      <!-- <input type="hidden" name="_method" value="put" th:if="${screening.id != null}"/> -->
 
-    <label for="auditorium">Sal:</label>
-    <input type="text" th:field="*{auditorium}" id="auditorium">
-    <br>
+      <!-- CSRF (hvis aktiv) -->
+      <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-    <label for="date">Dato:</label>
-    <input type="date" th:field="*{date}" id="date">
-    <br>
+      <!-- Fejlopsamling -->
+      <div th:if="${#fields.hasAnyErrors()}"
+           style="background:#fee;border:1px solid #f99;padding:10px;margin-bottom:10px;">
+        <p><strong>Ret venligst følgende:</strong></p>
+        <ul>
+          <li th:each="e : ${#fields.errors('*')}" th:text="${e}"></li>
+        </ul>
+      </div>
 
-    <label for="time">Tidspunkt:</label>
-    <input type="time" th:field="*{time}" id="time">
-    <br>
+      <!-- Film (binder til movie.id) -->
+      <label for="movie">Film:</label>
+      <select id="movie" th:field="*{movie.id}" required
+              aria-invalid="${#fields.hasErrors('movie') or #fields.hasErrors('movie.id')}">
+        <option value="" th:if="${screening.movie == null}" disabled selected>-- Vælg film --</option>
+        <option th:each="m : ${movies}"
+                th:value="${m.id}"
+                th:text="${m.movieTitle}"></option>
+      </select>
+      <div th:if="${#fields.hasErrors('movie')}" th:errors="*{movie}" class="err"></div>
+      <div th:if="${#fields.hasErrors('movie.id')}" th:errors="*{movie.id}" class="err"></div>
+      <br>
 
-    <label for="availableSeats">Ledige pladser:</label>
-    <input type="number" th:field="*{availableSeats}" id="availableSeats" min="1">
-    <br>
+      <!-- Sal (binder til screening.auditorium som tekst/navn; har data-capacity) -->
+      <label for="auditorium">Sal:</label>
+      <select id="auditorium" th:field="*{auditorium}" required aria-invalid="${#fields.hasErrors('auditorium')}">
+        <option value="" th:if="${screening.auditorium == null}" disabled selected>-- Vælg sal --</option>
 
-    <button type="submit">Gem</button>
-  </form>
+        <!-- Dynamisk liste, hvis du lægger 'auditoriums' i modellen (a.name, a.capacity) -->
+        <th:block th:if="${auditoriums != null}">
+          <option th:each="a : ${auditoriums}"
+                  th:value="${a.name}"
+                  th:text="${a.name}"
+                  th:attr="data-capacity=${a.capacity}">
+          </option>
+        </th:block>
+
+        <!-- Fallback: statiske sale med kapaciteter -->
+        <th:block th:if="${auditoriums == null}">
+          <option value="1" data-capacity="240">Sal 1</option>
+          <option value="2" data-capacity="352">Sal 2</option>
+        </th:block>
+      </select>
+      <div th:if="${#fields.hasErrors('auditorium')}" th:errors="*{auditorium}" class="err"></div>
+      <br>
+
+      <!-- Dato -->
+      <label for="date">Dato:</label>
+      <input id="date" type="date" th:field="*{date}" required aria-invalid="${#fields.hasErrors('date')}">
+      <div th:if="${#fields.hasErrors('date')}" th:errors="*{date}" class="err"></div>
+      <br>
+
+      <!-- Tid -->
+      <label for="time">Tidspunkt:</label>
+      <input id="time" type="time" th:field="*{time}" step="60" required aria-invalid="${#fields.hasErrors('time')}">
+      <div th:if="${#fields.hasErrors('time')}" th:errors="*{time}" class="err"></div>
+      <br>
+
+      <!-- Ledige pladser: readonly + auto-udfyld fra valgt sal -->
+      <label for="availableSeats">Ledige pladser:</label>
+      <input id="availableSeats"
+             type="number"
+             th:field="*{availableSeats}"
+             min="0"
+             inputmode="numeric"
+             readonly
+             aria-invalid="${#fields.hasErrors('availableSeats')}">
+      <div th:if="${#fields.hasErrors('availableSeats')}" th:errors="*{availableSeats}" class="err"></div>
+      <br>
+
+      <button type="submit">Gem</button>
+    </form>
+  </div>
 </main>
+
+
+<script th:src="@{/scripts/screenings-form.js}" defer></script>
+
 </body>
 </html>

@@ -1,0 +1,21 @@
+<h1>Ny vagt</h1>
+
+<form th:action="@{/shifts}" th:object="${shift}" method="post">
+  <label>Medarbejder</label>
+  <select th:field="*{employee.id}" required>
+    <option value="" disabled selected>Vælg…</option>
+    <option th:each="e : ${employees}" th:value="${e.id}" th:text="${e.name}"></option>
+  </select>
+
+  <label>Dato</label>
+  <input type="date" th:field="*{date}" required>
+
+  <label>Start</label>
+  <input type="time" th:field="*{startTime}" required>
+
+  <label>Slut</label>
+  <input type="time" th:field="*{endTime}" required>
+
+  <button type="submit">Gem</button>
+  <a th:href="@{/shifts}">Annullér</a>
+</form>

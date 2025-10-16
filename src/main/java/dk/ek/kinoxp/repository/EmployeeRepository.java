@@ -1,4 +1,6 @@
 package dk.ek.kinoxp.repository;
 
-public class EmployeeRepository {
-}
+import dk.ek.kinoxp.domain.Employee;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EmployeeRepository extends JpaRepository<Employee, Long> { }

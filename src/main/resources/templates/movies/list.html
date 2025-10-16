@@ -3,79 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <title>Film</title>
-    <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{/css/Style.css}">
 </head>
 <body>
-
-<header class="topbar">
-    <div class="brand">Biograf Navn</div>
-    <nav class="tabs">
-        <a class="tab" th:href="@{/}">Forside</a>
-        <a class="tab" th:href="@{/billetter}">Billetter</a>
-        <a class="tab" th:href="@{/mad-drikke}">Mad / Drikke</a>
-        <a class="tab" th:href="@{/kalender}">Kalender</a>
-        <a class="tab admin" th:href="@{/vagtplan}">Vagtplan</a>
-        <a class="tab active" th:href="@{/movies}">Film</a>
+<header>
+    <nav>
+        <a th:href="@{/}">Forside</a>
+        <a class="active" th:href="@{/movies}">Film</a>
+        <a th:href="@{/screenings}">Forestillinger</a>
     </nav>
 </header>
 
-<main class="content">
+<main>
     <h1>Film</h1>
 
-    <section>
-        <h2 th:text="'Aktive i dag (' + ${today} + ')'">Aktive i dag</h2>
-        <p th:if="${#lists.isEmpty(activeMovies)}">Ingen film er aktive i dag.</p>
+    <!-- Flash-besked -->
+    <div th:if="${msg}"
+         style="background:#eefbea;border:1px solid #9bd18e;padding:10px;margin-bottom:12px;"
+         th:text="${msg}"></div>
 
-        <table th:if="${!#lists.isEmpty(activeMovies)}" class="table">
-            <thead>
-            <tr><th>Titel</th><th>Sal</th><th>Premiere</th><th>Slut</th><th>Pris</th><th></th></tr>
-            </thead>
-            <tbody>
-            <tr th:each="m : ${activeMovies}">
-                <td th:text="${m.movieTitle}">Titel</td>
-                <td th:text="${#temporals.format(m.premiereDate, 'yyyy-MM-dd')}">2025-01-01</td>
-                <td th:text="${#temporals.format(m.endDate, 'yyyy-MM-dd')}">2025-01-31</td>
-                <td th:text="${m.price}">120</td>
-                <td>
-                    <a th:href="@{|/movies/${m.id}/rediger|}">Rediger</a>
-                    <form th:action="@{|/movies/${m.id}/slet|}" method="post" style="display:inline">
-                        <button type="submit">Slet</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
+    <p><a th:href="@{/movies/ny}">➕ Ny film</a></p>
 
-    <hr/>
+    <!-- Aktuelle film -->
+    <h2>Aktuelle film (d. <span th:text="${today}">i dag</span>)</h2>
+    <p th:if="${#lists.isEmpty(activeMovies)}">Ingen aktuelle film.</p>
 
-    <section>
-        <h2>Alle øvrige film</h2>
-        <a th:href="@{/movies/ny}">+ Ny film</a>
+    <table th:if="${!#lists.isEmpty(activeMovies)}" class="table">
+        <thead>
+        <tr>
+            <th>Titel</th>
+            <th>Genre</th>
+            <th>Periode</th>
+            <th>Pris</th>
+            <th>Handling</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="m : ${activeMovies}">
+            <td th:text="${m.movieTitle}">Titel</td>
+            <td th:text="${m.genre}">GENRE</td>
+            <td>
+                <span th:text="${m.premiereDate != null ? #temporals.format(m.premiereDate, 'yyyy-MM-dd') : '—'}">—</span>
+                –
+                <span th:text="${m.endDate != null ? #temporals.format(m.endDate, 'yyyy-MM-dd') : '—'}">—</span>
+            </td>
+            <td th:text="${m.price}">0</td>
+            <td>
+                <a th:href="@{/movies/{id}/rediger(id=${m.id})}">Rediger</a>
+                &nbsp;|&nbsp;
+                <form th:action="@{/movies/{id}/slet(id=${m.id})}" method="post" style="display:inline">
+                    <!-- Hvis du bruger Spring Security, fjern kommentaren herunder -->
+                    <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"> -->
+                    <button type="submit">Slet</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-        <p th:if="${#lists.isEmpty(otherMovies)}">Ingen øvrige film.</p>
+    <!-- Øvrige film -->
+    <h2 style="margin-top:24px;">Andre film</h2>
+    <p th:if="${#lists.isEmpty(otherMovies)}">Ingen øvrige film.</p>
 
-        <table th:if="${!#lists.isEmpty(otherMovies)}" class="table">
-            <thead>
-            <tr><th>Titel</th><th>Sal</th><th>Premiere</th><th>Slut</th><th>Pris</th><th></th></tr>
-            </thead>
-            <tbody>
-            <tr th:each="m : ${otherMovies}">
-                <td th:text="${m.movieTitle}"></td>
-                <td th:text="${#temporals.format(m.premiereDate, 'yyyy-MM-dd')}"></td>
-                <td th:text="${#temporals.format(m.endDate, 'yyyy-MM-dd')}"></td>
-                <td th:text="${m.price}"></td>
-                <td>
-                    <a th:href="@{|/movies/${m.id}/rediger|}">Rediger</a>
-                    <form th:action="@{|/movies/${m.id}/slet|}" method="post" style="display:inline">
-                        <button type="submit">Slet</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
+    <table th:if="${!#lists.isEmpty(otherMovies)}" class="table">
+        <thead>
+        <tr>
+            <th>Titel</th>
+            <th>Genre</th>
+            <th>Periode</th>
+            <th>Pris</th>
+            <th>Handling</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="m : ${otherMovies}">
+            <td th:text="${m.movieTitle}">Titel</td>
+            <td th:text="${m.genre}">GENRE</td>
+            <td>
+                <span th:text="${m.premiereDate != null ? #temporals.format(m.premiereDate, 'yyyy-MM-dd') : '—'}">—</span>
+                –
+                <span th:text="${m.endDate != null ? #temporals.format(m.endDate, 'yyyy-MM-dd') : '—'}">—</span>
+            </td>
+            <td th:text="${m.price}">0</td>
+            <td>
+                <a th:href="@{/movies/{id}/rediger(id=${m.id})}">Rediger</a>
+                &nbsp;|&nbsp;
+                <form th:action="@{/movies/{id}/slet(id=${m.id})}" method="post" style="display:inline">
+                    <button type="submit">Slet</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </main>
-
 </body>
 </html>
