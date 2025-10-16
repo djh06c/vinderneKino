@@ -17,10 +17,9 @@ public class Ticket {
     @ManyToOne(optional = false) @JoinColumn(name = "screening_id")
     private Screening screening;
 
-    // NEW: Knyt billet til et samlet salg (billetter + kioskvarer)
-    @ManyToOne @JoinColumn(name = "sale_id")
+   @ManyToOne @JoinColumn(name = "sale_id")
     private Sale sale;
-
+  
     @Column(name="row_letter", nullable=false, length=3)
     private String rowLetter;
 
@@ -31,23 +30,18 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private TicketType type;
 
+    // (valgfrit) kundeinfo, pris, tidspunkt osv.
+
 
     public Long getId() { return id; }
-
     public Screening getScreening() { return screening; }
     public void setScreening(Screening s) { this.screening = s; }
-
-    // NEW: sale getter/setter
     public Sale getSale() { return sale; }
     public void setSale(Sale sale) { this.sale = sale; }
-
     public String getRowLetter() { return rowLetter; }
     public void setRowLetter(String r) { this.rowLetter = r.toUpperCase(); }
-
     public int getSeatNumber() { return seatNumber; }
     public void setSeatNumber(int n) { this.seatNumber = n; }
-
     public TicketType getTicketType() { return type; }
     public void setTicketType(TicketType t) { this.type = t; }
 }
-
