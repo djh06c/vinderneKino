@@ -1,12 +1,18 @@
 package dk.ek.kinoxp.service;
 
-import dk.ek.kinoxp.domain.*;
+import dk.ek.kinoxp.domain.Item;
+import dk.ek.kinoxp.domain.Sale;
+import dk.ek.kinoxp.domain.SaleLine;
+import dk.ek.kinoxp.domain.Screening;
+import dk.ek.kinoxp.domain.Ticket;
 import dk.ek.kinoxp.domain.enums.TicketType;
-import dk.ek.kinoxp.repository.*;
+import dk.ek.kinoxp.repository.ItemRepository;
+import dk.ek.kinoxp.repository.SaleRepository;
+import dk.ek.kinoxp.repository.ScreeningRepository;
+import dk.ek.kinoxp.repository.TicketRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -27,7 +33,6 @@ public class CombinedSaleService {
         this.itemRepo = itemRepo;
     }
 
-
     @Transactional
     public Sale registerCombinedSale(Long screeningId,
                                      Map<TicketType, Integer> ticketQuantities,
@@ -37,29 +42,44 @@ public class CombinedSaleService {
         Sale sale = new Sale();
         int total = 0;
 
-
+        // --- Billetter ---
         for (Map.Entry<TicketType, Integer> entry : ticketQuantities.entrySet()) {
-            int qty = entry.getValue();
+            TicketType type = entry.getKey();
+            int qty = entry.getValue() == null ? 0 : entry.getValue();
             if (qty <= 0) continue;
+
             for (int i = 0; i < qty; i++) {
+                if (screening.getAvailableSeats() <= 0) {
+                    throw new IllegalStateException("Ingen ledige pladser tilbage.");
+                }
+
                 Ticket t = new Ticket();
                 t.setScreening(screening);
-                t.setType(entry.getKey());
-                t.setPrice(screening.getMovie().getPrice());
+                t.setTicketType(type);          // <-- ændret fra setType(...)
                 t.setSale(sale);
+
+                // TODO: sæt rigtige pladser hvis I har sædevalg; midlertidigt eksempel:
+                t.setRowLetter("A");
+                t.setSeatNumber(1 + i); // undgå duplikerede sæder i eksemplet
+
                 ticketRepo.save(t);
-                total += t.getPrice();
+
+                // Brug filmens pris (Ticket har ikke price-felt)
+                int unitPrice = screening.getMovie().getPrice();
+                total += unitPrice;
+
                 screening.setAvailableSeats(screening.getAvailableSeats() - 1);
             }
         }
         screeningRepo.save(screening);
 
-
+        // --- Kioskvarer ---
         for (Map.Entry<Long, Integer> entry : itemQuantities.entrySet()) {
-            int qty = entry.getValue();
+            Long itemId = entry.getKey();
+            int qty = entry.getValue() == null ? 0 : entry.getValue();
             if (qty <= 0) continue;
 
-            Item item = itemRepo.findById(entry.getKey()).orElseThrow();
+            Item item = itemRepo.findById(itemId).orElseThrow();
             int lineTotal = item.getPrice() * qty;
 
             SaleLine line = new SaleLine();
@@ -67,6 +87,7 @@ public class CombinedSaleService {
             line.setItem(item);
             line.setQuantity(qty);
             line.setLineTotal(lineTotal);
+
             sale.getLines().add(line);
             total += lineTotal;
         }
@@ -75,3 +96,4 @@ public class CombinedSaleService {
         return saleRepo.save(sale);
     }
 }
+

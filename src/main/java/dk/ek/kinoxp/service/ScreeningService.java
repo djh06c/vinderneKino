@@ -23,4 +23,6 @@ public class ScreeningService {
     public Screening getById(Long id) {return repo.findById(id).orElseThrow();}
     public Screening save(Screening screening) {return repo.save(screening);}
     public void deleteById(Long id) {repo.deleteById(id);}
+    public Screening get(Long id) {return repo.findById(id).orElseThrow();}
+
 }
