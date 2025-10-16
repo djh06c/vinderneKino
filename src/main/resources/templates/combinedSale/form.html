@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Billetter og kioskvarer</title>
+</head>
+<body>
+<h1>Køb billetter og kioskvarer</h1>
+
+<h2 th:text="${screening.movie.movieTitle}"></h2>
+<p>
+    Forestilling: <span th:text="${screening.date}"></span> kl.
+    <span th:text="${screening.time}"></span> – Ledige pladser:
+    <span th:text="${screening.availableSeats}"></span>
+</p>
+
+<form th:action="@{/combined-sale}" method="post">
+    <input type="hidden" name="screeningId" th:value="${screening.id}" />
+
+    <h3>Billetter</h3>
+    <table>
+        <thead><tr><th>Type</th><th>Antal</th></tr></thead>
+        <tbody>
+        <tr th:each="type : ${ticketTypes}">
+            <td th:text="${type}"></td>
+            <td><input type="number" min="0" name="ticket_" th:attrappend="name=${type}" value="0"/></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3>Kioskvarer</h3>
+    <table>
+        <thead><tr><th>Vare</th><th>Pris</th><th>Antal</th></tr></thead>
+        <tbody>
+        <tr th:each="i : ${items}">
+            <td th:text="${i.name}"></td>
+            <td th:text="${i.price} + ' kr'"></td>
+            <td><input type="number" min="0" value="0" name="item_" th:attrappend="name=${i.id}" /></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <button type="submit">Gennemfør køb</button>
+</form>
+
+<p><a th:href="@{/screenings}">Tilbage</a></p>
+</body>
+</html>

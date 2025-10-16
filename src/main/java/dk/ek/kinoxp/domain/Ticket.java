@@ -17,6 +17,9 @@ public class Ticket {
     @ManyToOne(optional = false) @JoinColumn(name = "screening_id")
     private Screening screening;
 
+   @ManyToOne @JoinColumn(name = "sale_id")
+    private Sale sale;
+  
     @Column(name="row_letter", nullable=false, length=3)
     private String rowLetter;
 
@@ -33,6 +36,8 @@ public class Ticket {
     public Long getId() { return id; }
     public Screening getScreening() { return screening; }
     public void setScreening(Screening s) { this.screening = s; }
+    public Sale getSale() { return sale; }
+    public void setSale(Sale sale) { this.sale = sale; }
     public String getRowLetter() { return rowLetter; }
     public void setRowLetter(String r) { this.rowLetter = r.toUpperCase(); }
     public int getSeatNumber() { return seatNumber; }
