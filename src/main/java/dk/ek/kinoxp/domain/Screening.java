@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 @Entity
 @Table(name= "screenings")
-public class Screening {
+public class  Screening {
 
     @Id
     @GeneratedValue
@@ -43,6 +43,5 @@ public class Screening {
     public void setDate(LocalDate date) {this.date = date;}
     public void setTime(LocalTime time) {this.time = time;}
     public void setAvailableSeats(int availableSeats) {this.availableSeats = availableSeats;}
-
 
 }

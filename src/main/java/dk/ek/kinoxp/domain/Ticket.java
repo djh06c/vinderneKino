@@ -24,6 +24,8 @@ public class Ticket {
 
     private LocalDateTime soldAt = LocalDateTime.now();
 
+    @ManyToOne
+    private Sale sale;
 
     public Long getId() { return id; }
     public Screening getScreening() { return screening; }
@@ -36,4 +38,5 @@ public class Ticket {
     public void setType(TicketType type) { this.type = type; }
     public void setPrice(int price) { this.price = price; }
     public void setSoldAt(LocalDateTime soldAt) { this.soldAt = soldAt; }
+    public void setSale(Sale sale) {this.sale = sale;}
 }
