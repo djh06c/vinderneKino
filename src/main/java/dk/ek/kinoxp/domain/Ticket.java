@@ -1,43 +1,53 @@
+// dk.ek.kinoxp.domain.Ticket
 package dk.ek.kinoxp.domain;
 
 import dk.ek.kinoxp.domain.enums.TicketType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Positive;
-
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "tickets")
+@Table(name = "tickets",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_ticket_screening_row_seat",
+                columnNames = {"screening_id", "row_letter", "seat_number"}
+        ))
 public class Ticket {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false) @JoinColumn(name = "screening_id")
     private Screening screening;
 
+    // NEW: Knyt billet til et samlet salg (billetter + kioskvarer)
+    @ManyToOne @JoinColumn(name = "sale_id")
+    private Sale sale;
+
+    @Column(name="row_letter", nullable=false, length=3)
+    private String rowLetter;
+
+    @Column(name="seat_number", nullable=false)
+    private int seatNumber;
+
+    @Column(name="ticket_type", nullable=false)
     @Enumerated(EnumType.STRING)
     private TicketType type;
 
-    @Positive
-    private int price;
-
-    private LocalDateTime soldAt = LocalDateTime.now();
-
-    @ManyToOne
-    private Sale sale;
 
     public Long getId() { return id; }
-    public Screening getScreening() { return screening; }
-    public TicketType getType() { return type; }
-    public int getPrice() { return price; }
-    public LocalDateTime getSoldAt() { return soldAt; }
-    public Sale getSale() {return sale;}
 
-    public void setId(Long id) { this.id = id; }
-    public void setScreening(Screening screening) { this.screening = screening; }
-    public void setType(TicketType type) { this.type = type; }
-    public void setPrice(int price) { this.price = price; }
-    public void setSoldAt(LocalDateTime soldAt) { this.soldAt = soldAt; }
-    public void setSale(Sale sale) {this.sale = sale;}
+    public Screening getScreening() { return screening; }
+    public void setScreening(Screening s) { this.screening = s; }
+
+    // NEW: sale getter/setter
+    public Sale getSale() { return sale; }
+    public void setSale(Sale sale) { this.sale = sale; }
+
+    public String getRowLetter() { return rowLetter; }
+    public void setRowLetter(String r) { this.rowLetter = r.toUpperCase(); }
+
+    public int getSeatNumber() { return seatNumber; }
+    public void setSeatNumber(int n) { this.seatNumber = n; }
+
+    public TicketType getTicketType() { return type; }
+    public void setTicketType(TicketType t) { this.type = t; }
 }
+
