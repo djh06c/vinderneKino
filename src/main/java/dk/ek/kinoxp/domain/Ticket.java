@@ -32,6 +32,7 @@ public class Ticket {
     public TicketType getType() { return type; }
     public int getPrice() { return price; }
     public LocalDateTime getSoldAt() { return soldAt; }
+    public Sale getSale() {return sale;}
 
     public void setId(Long id) { this.id = id; }
     public void setScreening(Screening screening) { this.screening = screening; }
