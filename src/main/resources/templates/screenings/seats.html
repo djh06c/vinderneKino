@@ -1,31 +1,58 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Sædevælger</title>
-    <link rel="stylesheet" th:href="@{/css/Style.css}">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+    <link rel="stylesheet" th:href="@{/css/screeningStyle.css}">
 </head>
-<body>
+<body class="seats">
+<header class="topbar">
+    <div class="brand">KinoXP</div>
+    <nav class="tabs">
+        <a class="tab" th:href="@{/}">Forside</a>
+        <a class="tab" th:href="@{/billetter}">Billetter</a>
+        <a class="tab" th:href="@{/movies}">Ret i film</a>
+        <a class="tab" th:href="@{/mad-drikke}">Mad / Drikke</a>
+        <a class="tab" th:href="@{/kalender}">Kalender</a>
+        <a class="tab admin" th:href="@{/vagtplan}">Vagtplan</a>
+    </nav>
+    <div class="auth">
+        <span>Bruger: X</span>
+        <a class="btn" href="#">Log ind/ud</a>
+    </div>
+</header>
+
 <h1>Vælg sæder</h1>
+
 <div id="toolbar">
     <span>Billetter:</span>
-    <button id="dec">−</button>
+    <button id="dec" type="button">−</button>
     <strong id="count">2</strong>
-    <button id="inc">+</button>
-    <button id="suggest">Find bedste sæder</button>
+    <button id="inc" type="button">+</button>
+
+    <button id="suggest" type="button">Find bedste sæder</button>
     <span id="status"></span>
-    <button id="checkout" class="primary">Gennemfør</button>
+
+    <button id="checkout" class="primary" type="button">Gennemfør</button>
 </div>
-<div class ="auditorium">
+
+<!-- Sal + lærred + område hvor JS injicerer sæder -->
+<div class="auditorium">
     <div class="screen">Lærred</div>
     <div id="seating" th:attr="data-screening-id=${screeningId}"></div>
 </div>
+
+<!-- Toast beskeder -->
 <div id="toast"></div>
 
+<!-- Gør screeningId tilgængelig for JS -->
 <script th:inline="javascript">
     const screeningId = /*[[${screeningId}]]*/ 1;
 </script>
 
-<script src="/scripts/SeatScript.js" defer></script>
+<!-- Din sæde-logic -->
+<script th:src="@{/scripts/SeatScript.js}" defer></script>
 </body>
 </html>

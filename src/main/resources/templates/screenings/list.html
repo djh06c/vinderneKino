@@ -3,23 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <title>Forestillinger</title>
+  <link rel="stylesheet" th:href="@{/css/theme.css}">
+  <link rel="stylesheet" th:href="@{/css/utilities.css}">
   <link rel="stylesheet" th:href="@{/css/screeningStyle.css}">
 </head>
-<body>
-<header>
-  <nav>
-    <a th:href="@{/}">Forside</a>
-    <a th:href="@{/movies}">Film</a>
-    <a class="active" th:href="@{/screenings}">Forestillinger</a>
+<body class="screenings">
+<header class="topbar">
+  <div class="brand">KinoXP</div>
+  <nav class="tabs">
+    <a class="tab" th:href="@{/}">Forside</a>
+    <a class="tab" th:href="@{/billetter}">Billetter</a>
+    <a class="tab" th:href="@{/movies}">Ret i film</a>
+    <a class="tab" th:href="@{/mad-drikke}">Mad / Drikke</a>
+    <a class="tab" th:href="@{/kalender}">Kalender</a>
+    <a class="tab admin" th:href="@{/vagtplan}">Vagtplan</a>
   </nav>
+  <div class="auth">
+    <span>Bruger: X</span>
+    <a class="btn" href="#">Log ind/ud</a>
+  </div>
 </header>
+
 
 <main>
   <h1>Forestillinger</h1>
 
   <!-- Flash-besked -->
-  <div th:if="${msg}" style="background:#eefbea;border:1px solid #9bd18e;padding:10px;margin-bottom:12px;"
-       th:text="${msg}"></div>
+  <div th:if="${msg}" class="alert alert--success" th:text="${msg}"></div>
 
   <!-- Filter: vælg film og dato -->
   <form method="get" th:action="@{/screenings}" style="margin-bottom:16px;">
@@ -41,7 +51,9 @@
 
   <!-- Resultater -->
   <div th:if="${screenings != null}">
-    <h2 th:text="'Visninger af ' + ${selectedMovie.movieTitle} + ' d. ' + ${date}"></h2>
+    <div class="section-bar"
+         th:text="'Visninger af ' + ${selectedMovie.movieTitle} + ' d. ' + ${date}">
+    </div>
 
     <p th:if="${#lists.isEmpty(screenings)}">Ingen forestillinger fundet for denne dag.</p>
 

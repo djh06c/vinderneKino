@@ -1,0 +1,175 @@
+/* ===========================
+   KinoXP – theme.css (global)
+   =========================== */
+
+/* Farver & tokens */
+:root{
+    --ink:#1e120f;
+    --paper:#fff7f0;
+
+    --maroon:#32120f;
+    --maroon-2:#2a1512;
+    --cacao:#23100d;
+
+    --amber:#ffb454;
+    --amber-2:#ffd59a;
+
+    --muted:#bba39a;
+
+    --line:#efe5da;
+    --line-warm:#3a231b;
+
+    --radius:12px;
+    --lift:0 8px 22px rgba(0,0,0,.18);
+}
+
+/* Baseline */
+*{ box-sizing:border-box }
+html,body{ height:100% }
+body{
+    margin:0;
+    font-family:system-ui, Segoe UI, Roboto, Arial;
+    color:#f8ece6;
+    background:
+            radial-gradient(900px 520px at 90% -10%, rgba(255,180,84,.12), transparent 60%),
+            radial-gradient(1200px 600px at 0% 100%, rgba(94,19,26,.35), transparent 55%),
+            linear-gradient(180deg, var(--maroon) 0%, var(--maroon-2) 55%, var(--maroon) 100%);
+}
+
+/* Links (generelt) */
+a{ color:var(--amber); text-decoration:none }
+a:hover{ color:var(--amber-2) }
+
+/* ===== Topbar – brug samme markup på alle sider =====
+<header class="topbar">
+    <div class="brand">KinoXP</div>
+    <nav class="tabs">
+        <a class="tab" th:href="@{/}">Forside</a>
+        <a class="tab" th:href="@{/billetter}">Billetter</a>
+        <a class="tab" th:href="@{/movies}">Ret i film</a>
+        <a class="tab" th:href="@{/mad-drikke}">Mad / Drikke</a>
+        <a class="tab" th:href="@{/kalender}">Kalender</a>
+        <a class="tab admin" th:href="@{/vagtplan}">Vagtplan</a>
+    </nav>
+    <div class="auth">
+        <span>Bruger: X</span>
+        <a class="btn" href="#">Log ind/ud</a>
+    </div>
+</header>
+===================================================== */
+
+header.topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:12px 20px;
+    background:rgba(222,184,135,.95);          /* burlywood-agtig, varm */
+    color:var(--ink);
+    border-bottom:1px solid rgba(0,0,0,.06);
+    backdrop-filter:saturate(120%) blur(4px);
+    position:relative;
+    z-index:10;
+}
+
+header.topbar .brand{
+    font-weight:800;
+    letter-spacing:.2px;
+}
+
+header.topbar .tabs{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    flex:1 1 auto;
+}
+
+header.topbar .tab{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:8px 12px;
+    border-radius:999px;
+    background:#ffffffcc;
+    color:var(--ink);
+    border:1px solid rgba(0,0,0,.06);
+    transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+header.topbar .tab:hover{
+    background:#fff;
+    transform:translateY(-1px);
+    box-shadow:0 5px 14px rgba(0,0,0,.08);
+}
+header.topbar .tab.is-active{
+    background:var(--amber);
+    color:#3b271f;
+    border-color:rgba(0,0,0,.08);
+}
+
+header.topbar .auth{
+    display:flex; align-items:center; gap:12px;
+}
+
+header.topbar .btn{
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid rgba(0,0,0,.12);
+    background:#fffdf9;
+    color:var(--ink);
+    transition:.12s;
+}
+header.topbar .btn:hover{
+    background:#fff;
+    transform:translateY(-1px);
+    box-shadow:0 5px 14px rgba(0,0,0,.08);
+}
+
+/* Container helpers */
+.container{ max-width:1100px; margin:0 auto; padding:20px }
+.section{ padding:18px 0 }
+
+/* Kort/panel – generelt look (kan bruges frit) */
+.card{
+    background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    border:1px solid var(--line-warm);
+    border-radius:var(--radius);
+    box-shadow:none;
+}
+.card--lift:hover{ box-shadow:var(--lift); border-color:rgba(255,180,84,.45) }
+
+/* Knapper generelt */
+.btn.primary{
+    background:var(--amber);
+    color:#3b271f;
+    border:1px solid rgba(0,0,0,.08);
+    padding:10px 14px;
+    border-radius:10px;
+    font-weight:800;
+}
+.btn.primary:hover{ background:var(--amber-2) }
+.btn.ghost{
+    background:transparent;
+    color:#f8ece6;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:10px;
+    padding:10px 14px;
+}
+
+/* Neutral standardtabel (mørk) – kan overstyres lokalt */
+.table{
+    width:100%;
+    border-collapse:collapse;
+    background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    border:1px solid var(--line-warm);
+    border-radius:var(--radius);
+    overflow:hidden;
+    color:#f8ece6;
+}
+.table thead{ background:rgba(255,255,255,.07) }
+.table th,.table td{ padding:12px 14px; text-align:left; border-top:1px solid rgba(255,255,255,.06) }
+.table tr:first-child th{ border-top:0 }
+.table tbody tr:nth-child(even){ background:rgba(255,255,255,.02) }
+.table tbody tr:hover{ background:rgba(255,255,255,.05) }
+
+/* Små utiliteter */
+.muted{ color:var(--muted) }
+.pill{ padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06) }
+.hidden{ display:none !important }

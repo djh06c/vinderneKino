@@ -87,28 +87,28 @@ function render() {
         return;
     }
 
-    const gap  = 6;
-    const maxNum = Math.max(...state.seats.map(s => s.number));
+    const gap = 6;
+    const cols = Math.max(...state.seats.map(s => s.number));
 
-    // gør grid’et mindst ~600px bredt ved at øge seat-størrelsen lidt
-    const targetMinPx = 600;
-    let cell = 28;
-    let gridPx = maxNum * cell + (maxNum - 1) * gap;
-    if (gridPx < targetMinPx) {
-        cell = Math.min(44, Math.floor((targetMinPx - (maxNum - 1) * gap) / maxNum));
-        gridPx = maxNum * cell + (maxNum - 1) * gap;
-    }
+    const container = root.parentElement; // .auditorium
+    const containerWidth = Math.max(0, container.clientWidth - 32);
 
-    // grid-opsætning + fast bredde (så centrerer det)
+    let cell = Math.floor((containerWidth - (cols - 1) * gap) / cols);
+
+    cell = Math.max(18, Math.min(cell, 36)); // 18–36 px
+
     root.style.display = 'grid';
-    root.style.gridTemplateColumns = `repeat(${maxNum}, ${cell}px)`;
+    root.style.gridTemplateColumns = `repeat(${cols}, ${cell}px)`;
     root.style.gap = `${gap}px`;
-    root.style.width = `${gridPx}px`;
+    root.style.width = '100%';
+    root.style.maxWidth = containerWidth + 'px';
     root.style.margin = '0 auto';
 
-    // match “lærred” til samme bredde
     const screen = document.querySelector('.screen');
-    if (screen) screen.style.width = `${gridPx}px`;
+    if (screen) {
+        screen.style.width = '100%';
+        screen.style.maxWidth = containerWidth + 'px';
+    }
 
     root.innerHTML = '';
 
@@ -129,6 +129,7 @@ function render() {
     }
 
     updateNeeded();
+
 }
 
 
