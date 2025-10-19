@@ -4,30 +4,65 @@
     <meta charset="UTF-8"/>
     <title>Forside - Biograf</title>
     <link rel="stylesheet" th:href="@{/css/stylesheet.css}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 </head>
-<body>
+<body class="home"> <!-- <-- tilføj 'home' her -->
 
 <header class="topbar">
     <div class="brand">KinoXP</div>
-
     <nav class="tabs">
-        <a class="tab" th:href="@{/billetter}">Billetter</a>
+        <a class="tab" th:href="@{/}">Forside</a>
         <a class="tab" th:href="@{/movies}">Ret i film</a>
         <a class="tab" th:href="@{/mad-drikke}">Mad / Drikke</a>
         <a class="tab" th:href="@{/kalender}">Kalender</a>
         <a class="tab admin" th:href="@{/vagtplan}">Vagtplan</a>
     </nav>
-
     <div class="auth">
         <span>Bruger: X</span>
         <a class="btn" href="#">Log ind/ud</a>
     </div>
 </header>
 
-<main class="content">
-    <h2>Velkommen til biografen!</h2>
-    <p>Her kan du købe billetter, bestille mad og drikke, og se vores film oversigt!.</p>
+<main class="home-content home-internal">
+    <section class="hero-min">
+        <h1>KinoXP – intern forside</h1>
+        <p class="muted">Vælg en sektion herunder. Al funktionalitet ligger på undersiderne.</p>
+    </section>
+
+    <section class="quick-links">
+        <a class="q-card" th:href="@{/billetter}">
+            <div class="q-ico">🎟️</div>
+            <div class="q-title">Billetter</div>
+            <div class="q-sub">Opret/administrér</div>
+        </a>
+
+        <a class="q-card" th:href="@{/movies}">
+            <div class="q-ico">🎬</div>
+            <div class="q-title">Film</div>
+            <div class="q-sub">Oversigt og redigering</div>
+        </a>
+
+        <a class="q-card" th:href="@{/mad-drikke}">
+            <div class="q-ico">🍿</div>
+            <div class="q-title">Mad & Drikke</div>
+            <div class="q-sub">Bestillinger/udvalg</div>
+        </a>
+
+        <a class="q-card" th:href="@{/kalender}">
+            <div class="q-ico">🗓️</div>
+            <div class="q-title">Kalender</div>
+            <div class="q-sub">Visning af forestillinger</div>
+        </a>
+
+        <a class="q-card" th:href="@{/vagtplan}">
+            <div class="q-ico">🧑‍💼</div>
+            <div class="q-title">Vagtplan</div>
+            <div class="q-sub">Internt personaleskema</div>
+        </a>
+    </section>
 </main>
+
+
 
 </body>
 </html>

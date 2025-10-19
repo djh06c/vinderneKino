@@ -1,78 +1,238 @@
-/* ====== Tema (match din mørke topbar) ====== */
-:root{
-    --bg:#f6f7fb;
-    --surface:#ffffff;
-    --text:#111827;
-    --muted:#6b7280;
-    --primary:#2563eb; --primary-700:#1d4ed8;
-    --border:#e5e7eb; --hover:#f3f4f6;
-    --header:#333; --header-text:#f3f4f6;
-}
+/* ===========================
+   KinoXP – screeningStyle.css
+   Scope: .screenings (liste & form) + .seats (sædevælger)
+   Forudsætter theme.css før denne (variabler).
+   =========================== */
 
-/* Base */
-*{ box-sizing:border-box }
-body{
-    font-family: Arial, sans-serif;
-    margin:0; padding:0;
-    background: var(--bg); color: var(--text);
-}
+/* ---------- .screenings (liste & form) ---------- */
 
-/* Header/nav som i dit stylesheet – bare lidt pænere */
-header{ background: var(--header) }
-header nav{ max-width:1100px; margin:0 auto; padding:10px 20px }
-header nav a{
-    color: var(--header-text); text-decoration:none; margin-right:15px;
-    padding:6px 10px; border-radius:8px; opacity:.95;
-}
-header nav a:hover{ background: rgba(255,255,255,.1); opacity:1 }
+/* Layout & typografi */
+.screenings main{ max-width:1100px; margin:0 auto; padding:20px; }
+.screenings h1,.screenings h2{ margin:6px 0 14px; color:#ffece0; }
+.screenings .muted{ color:#e4cfc1; }
 
-/* Layout */
-main{ max-width:1100px; margin:0 auto; padding:20px }
-h1, h2{ color: var(--text); margin:6px 0 14px }
-.muted{ color:var(--muted) }
 
-/* Filter (vælg film + dato) */
-form[method="get"]{
+/* Filterform */
+.screenings form[method="get"]{
     display:flex; flex-wrap:wrap; gap:10px 12px; align-items:center;
-    background: var(--surface); border:1px solid var(--border);
-    padding:12px; border-radius:12px; box-shadow:0 1px 2px rgba(0,0,0,.05);
-    margin-bottom:16px;
+    background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    border:1px solid var(--line-warm, #3a231b);
+    padding:12px; border-radius:var(--radius, 12px);
 }
-form[method="get"] label{ font-weight:600; margin-right:6px }
-form[method="get"] select,
-form[method="get"] input[type="date"]{
-    padding:9px 12px; border:1px solid var(--border); border-radius:10px; background:#fff;
+.screenings form[method="get"] label{ font-weight:700; margin-right:6px; color:#ffece0; }
+.screenings form[method="get"] select,
+.screenings form[method="get"] input[type="date"]{
+    padding:10px 12px; border:1px solid var(--line-warm, #3a231b); border-radius:10px;
+    background:#2b1714; color:#ffece0;
 }
-form[method="get"] button{
-    background: var(--primary); color:#fff; border:0;
-    padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600;
+.screenings form[method="get"] select:focus,
+.screenings form[method="get"] input[type="date"]:focus{
+    outline:none; border-color: rgba(255,180,84,.55);
+    box-shadow: 0 0 0 3px rgba(255,180,84,.18);
 }
-form[method="get"] button:hover{ background: var(--primary-700) }
+.screenings form[method="get"] button{
+    background: var(--amber, #ffb454); color:#3b271f; border:1px solid rgba(0,0,0,.08);
+    padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:800;
+}
+.screenings form[method="get"] button:hover{ background: var(--amber-2, #ffd59a); }
 
-/* Tabel (ens stil som film-listen) */
-table{ border-collapse:collapse; width:100%; margin-top:15px; background:var(--surface);
-    border:1px solid var(--border); border-radius:12px; overflow:hidden;
-    box-shadow:0 1px 2px rgba(0,0,0,.05);
+/* Resultat-tabel (mørk variant) */
+.screenings .table{
+    width:100%; border-collapse:collapse; margin-top:15px;
+    background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    border:1px solid var(--line-warm, #3a231b); border-radius:var(--radius, 12px); overflow:hidden;
 }
-th, td{ padding:12px 14px; text-align:left; border-bottom:1px solid var(--border) }
-thead th{ background:#fafafa; color:var(--muted); font-size:14px; font-weight:600 }
-tbody tr:nth-child(even){ background:#fcfcfd }
-tbody tr:hover{ background: var(--hover) }
-tbody tr:last-child td{ border-bottom:0 }
+.screenings .table thead{ background: rgba(255,255,255,.07); }
+.screenings .table thead th{
+    background: transparent; color:#f3dacb; font-size:14px; font-weight:700;
+    padding:12px 14px; text-align:left; border-bottom:1px solid rgba(255,255,255,.06);
+}
+.screenings .table td{
+    padding:12px 14px; border-top:1px solid rgba(255,255,255,.06); color:#ffece0;
+}
+.screenings .table tbody tr:nth-child(even){ background: rgba(255,255,255,.02); }
+.screenings .table tbody tr:hover{ background: rgba(255,255,255,.05); }
 
-/* Knapper/links i Handling */
-button{
-    background:#007BFF; color:white; border:none; padding:6px 10px;
-    cursor:pointer; border-radius:8px; font:inherit;
+/* Links/knapper i tabel */
+.screenings .table a{
+    color: var(--amber, #ffb454); text-decoration:none; font-weight:700;
 }
-button:hover{ background:#0056b3 }
-a{ color:#007BFF; text-decoration:none; font-weight:600 }
-a:hover{ text-decoration:underline }
+.screenings .table a:hover{ color: var(--amber-2, #ffd59a); }
+.screenings .table button{
+    background:transparent; color:#ffece0; border:1px solid var(--line-warm, #3a231b);
+    padding:6px 10px; border-radius:8px; cursor:pointer;
+}
+.screenings .table button:hover{ border-color: rgba(255,180,84,.45); }
+
+/* Formular (ny/rediger) */
+.screenings #screeningForm{
+    background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    border:1px solid var(--line-warm, #3a231b); border-radius:var(--radius, 12px);
+    padding:16px;
+}
+.screenings #screeningForm label{ display:block; font-weight:800; margin-bottom:6px; color:#ffece0; }
+.screenings #screeningForm input[type="date"],
+.screenings #screeningForm input[type="time"],
+.screenings #screeningForm input[type="number"],
+.screenings #screeningForm select{
+    width: clamp(260px, 35vw, 420px);
+    padding:10px 12px; border:1px solid var(--line-warm, #3a231b); border-radius:10px;
+    background:#2b1714; color:#ffece0;
+}
+.screenings #screeningForm input:focus,
+.screenings #screeningForm select:focus{
+    outline:none; border-color: rgba(255,180,84,.55);
+    box-shadow: 0 0 0 3px rgba(255,180,84,.18);
+}
+.screenings #screeningForm .err{ margin:6px 0 8px; color:#ffd6d6; }
+.screenings #screeningForm button[type="submit"]{
+    background: var(--amber, #ffb454); color:#3b271f; border:1px solid rgba(0,0,0,.08);
+    padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:800; margin-top:10px;
+}
+.screenings #screeningForm button[type="submit"]:hover{ background: var(--amber-2, #ffd59a); }
+
+/* Alerts (flash) + sektionstitel-bar */
+.screenings .alert{
+    padding:10px 12px; border-radius:10px; margin-bottom:12px;
+    border:1px solid var(--line-warm, #3a231b); background: rgba(255,255,255,.06); color:#ffece0;
+}
+.screenings .alert--success{ background: rgba(46,160,67,.16); border-color: rgba(46,160,67,.45); color:#dff7e7; }
+.screenings .alert--info   { background: rgba(255,180,84,.14); border-color: rgba(255,180,84,.45); color:#ffe3bf; }
+.screenings .alert--warning{ background: rgba(255,194,58,.16); border-color: rgba(255,194,58,.45); color:#ffe8b8; }
+.screenings .alert--error  { background: rgba(220,56,56,.16); border-color: rgba(220,56,56,.45); color:#ffd6d6; }
+
+.screenings .section-bar{
+    padding:10px 12px; border-radius:10px; margin:12px 0 8px;
+    background: rgba(255,255,255,.06); border:1px solid var(--line-warm, #3a231b);
+    color:#ffece0; font-weight:700;
+}
+
+/* Links i mørkt miljø (generelt) */
+.screenings a{ color: var(--amber, #ffb454); }
+.screenings a:hover{ color: var(--amber-2, #ffd59a); }
 
 /* Responsive */
 @media (max-width:720px){
-    main{ padding:18px 14px }
-    form[method="get"]{ gap:8px }
-    th, td{ padding:10px }
-    h1{ font-size:26px }
+    .screenings main{ padding:18px 14px }
+    .screenings form[method="get"]{ gap:8px }
+    .screenings .table td, .screenings .table th{ padding:10px }
+    .screenings h1{ font-size:26px }
+}
+
+/* ---------- .seats (sædevælger) ---------- */
+
+.seats{
+    color:#ffece0;
+    min-height:100vh;
+    padding:20px;
+    max-width:1100px;
+    margin:0 auto;
+}
+.seats h1{ margin:6px 0 14px; color:#ffe3bf; }
+
+/* Toolbar */
+.seats #toolbar{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    border:1px solid var(--line-warm, #3a231b); border-radius:12px;
+    padding:10px 12px; margin-bottom:14px;
+}
+.seats #toolbar button{
+    background:#2b1714; color:#ffece0; border:1px solid var(--line-warm, #3a231b);
+    padding:6px 10px; border-radius:8px; cursor:pointer;
+}
+.seats #toolbar button:hover{ border-color: rgba(255,180,84,.45); }
+.seats #toolbar .primary{ background: var(--amber, #ffb454); color:#3b271f; border:1px solid rgba(0,0,0,.08); }
+.seats #toolbar .primary:hover{ background: var(--amber-2, #ffd59a); }
+
+/* Auditorium container */
+.seats .auditorium{
+    background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    border:1px solid var(--line-warm, #3a231b); border-radius:14px;
+    padding:16px;
+}
+
+/* Lærred */
+.seats .screen{
+    text-align:center; padding:8px 0; margin-bottom:12px;
+    background: rgba(255,255,255,.06); border:1px solid var(--line-warm, #3a231b);
+    border-radius:8px; color:#f3dacb; font-weight:700;
+}
+
+/* Sæde-grid – styling kun (JS styrer antal/placering) */
+.seats #seating{
+    --gap: 6px;
+    display:grid;
+    gap: var(--gap);
+    justify-content:center;
+
+    width:100%;
+    max-width:900px;
+    margin:0 auto;
+    padding:12px 6px;
+
+    max-height:none;
+    overflow: visible;
+    overflow-y: auto;
+
+    background: rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:10px;
+}
+
+/* Sæder – tydelig kontrast */
+.seats .seat{
+    width:28px; height:28px;
+    border-radius:6px;
+    background:#644038;               /* fri */
+    border:1px solid #74493f;
+    display:grid; place-items:center;
+    font-size:12px; color:#f2dacf;
+    user-select:none; cursor:pointer;
+    transition: transform .08s ease, box-shadow .08s ease, border-color .12s ease, background .12s ease;
+}
+.seats .seat:hover{ transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,.25); }
+
+/* Match JS-statusklasser */
+.seats .seat.available{ background:#644038; border-color:#74493f; color:#f2dacf; }
+.seats .seat.mine{
+    background: var(--amber, #ffb454);
+    color:#3b271f;
+    border-color: rgba(255,180,84,.7);
+    box-shadow: 0 0 0 2px rgba(255,180,84,.35);
+}
+.seats .seat.held{
+    background:#46302b; color:#bda79d; border-color:#523934;
+    cursor:not-allowed; opacity:.75;
+}
+.seats .seat.sold{
+    background:#2e1e1a; border-color:#3a2621; color:#a38d85;
+    cursor:not-allowed; opacity:.6;
+}
+
+/* Hover kun på klikbare */
+.seats .seat.available:hover,
+.seats .seat.mine:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,.25);
+}
+
+/* Tastatur-fokus */
+.seats .seat:focus-visible{
+    outline: 2px solid var(--amber, #ffb454);
+    outline-offset: 2px;
+}
+
+/* Scrollbars (Chromium/WebKit) – mørke */
+.seats #seating::-webkit-scrollbar{ width:10px }
+.seats #seating::-webkit-scrollbar-track{ background: rgba(0,0,0,.25); border-radius: 10px; }
+.seats #seating::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.15); border-radius: 10px; }
+.seats #seating::-webkit-scrollbar-thumb:hover{ background: rgba(255,255,255,.25); }
+
+/* Mindre skærme: lidt mindre sæder så grid’et passer i bredden */
+@media (max-width:900px){
+    .seats .seat{ width:26px; height:26px; }
+}
+@media (max-width:600px){
+    .seats .seat{ width:24px; height:24px; }
 }
