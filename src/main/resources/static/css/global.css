@@ -1,0 +1,181 @@
+/* ===========================
+   KinoXP – global.css
+   Delte styles til øvrige sider
+   (kræver theme.css før denne)
+   =========================== */
+
+/* ---------- Indholds-bredde ---------- */
+:root{
+    /* 880 / 960 / 1040 — justér frit */
+    --content-width: 960px;
+}
+
+/* ---------- Helpers ---------- */
+.page{ max-width: var(--content-width); margin:0 auto; padding:20px; }
+.muted{ color:#bba39a; }
+
+.add-link{
+    display:inline-flex; align-items:center; gap:8px;
+    color:var(--amber); font-weight:700; text-decoration:none;
+}
+.add-link:hover{ color:var(--amber-2) }
+
+.chip{
+    display:inline-block; padding:4px 8px; border-radius:999px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.16);
+    color:#f3dacb; font-size:.85rem;
+}
+
+.actions{ display:flex; align-items:center; gap:10px; }
+.actions a{ color:var(--amber); font-weight:700; text-decoration:none; }
+.actions a:hover{ color:var(--amber-2) }
+.actions .danger{ color:#ffd6d6; }
+.actions .danger:hover{ color:#ffbdbd; }
+
+/* Sektionstitel/bjælke (frivillig erstatning for h2) */
+.section-bar{
+    padding:10px 12px; border-radius:10px;
+    background: rgba(255,255,255,.06);
+    border:1px solid var(--line-warm);
+    color:#ffece0; font-weight:800;
+}
+
+/* Grundtabel (mørk) */
+.table{
+    width:100%;
+    border-collapse:collapse;
+    background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    border:1px solid var(--line-warm);
+    border-radius:12px;
+    overflow:hidden;
+    color:#f8ece6;
+}
+.table thead{ background:rgba(255,255,255,.07) }
+.table th,.table td{ padding:12px 14px; text-align:left; border-top:1px solid rgba(255,255,255,.06) }
+.table tr:first-child th{ border-top:0 }
+.table tbody tr:nth-child(even){ background:rgba(255,255,255,.02) }
+.table tbody tr:hover{ background:rgba(255,255,255,.05) }
+
+/* ======================================
+   Film-sider (scopet til <body class="movies">)
+   ====================================== */
+
+/* Centrér hele indholdsområdet */
+.movies main{
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Liste/oversigt */
+.movies h1{ margin:6px 0 14px; color:#ffece0; }
+.movies h2{ margin:18px 0 10px; color:#ffece0; }
+.movies .add-link{ margin:6px 0 16px; }
+.movies .table + h2,
+.movies .table + .section-bar{ margin-top:24px; }
+
+.movies .genre-chip{
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.16);
+}
+.movies .col-right{ text-align:right; white-space:nowrap; }
+
+/* ---------- Movie form (din nuværende markup) ---------- */
+
+/* Hvis du sætter class="form-title" på <h1> kan du styre den separat,
+   ellers bruger vi bare .movies h1 ovenfor */
+.movies h1.form-title{
+    max-width: var(--content-width);
+    margin: 12px auto 14px;
+    color:#ffece0;
+}
+
+/* Selve form-kortet */
+.movies #movieForm{
+    max-width: 640px;
+    margin: 12px auto 36px;
+    padding: 16px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    border: 1px solid var(--line-warm);
+}
+
+/* Spacing mellem felter */
+.movies #movieForm > div{ margin-bottom:14px; }
+
+/* Labels */
+.movies #movieForm label{
+    display:block; margin-bottom:6px;
+    font-weight:800; color:#ffece0;
+}
+
+/* Inputs & selects */
+.movies #movieForm input,
+.movies #movieForm select{
+    width:100%;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid var(--line-warm);
+    background:#2b1714;
+    color:#ffece0;
+}
+.movies #movieForm input:focus,
+.movies #movieForm select:focus{
+    outline:none;
+    border-color: rgba(255,180,84,.55);
+    box-shadow: 0 0 0 3px rgba(255,180,84,.18);
+}
+
+/* Fejl (Thymeleaf spans) – korrekt escape af kolon i CSS */
+.movies #movieForm span[th\:errors],
+.movies #movieForm .err{
+    display:block;
+    margin-top:6px;
+    color:#ffd6d6;
+    font-size:.95rem;
+}
+
+/* Knaprække */
+.movies #movieForm .form-actions{
+    display:flex; align-items:center; gap:10px;
+    margin-top:6px;
+}
+
+/* Knapper (matcher theme) */
+.movies #movieForm button[type="submit"]{
+    background: var(--amber);
+    color:#3b271f;
+    border:1px solid rgba(0,0,0,.08);
+    padding:10px 14px;
+    border-radius:10px;
+    font-weight:800;
+    cursor:pointer;
+}
+.movies #movieForm button[type="submit"]:hover{ background: var(--amber-2); }
+
+.movies #movieForm .link-muted{
+    color:#cdb6ad; text-decoration:none;
+}
+.movies #movieForm .link-muted:hover{ color:#ffe3bf; }
+
+/* Tilbage-link under formen */
+.movies p > a[href*="/movies"]{
+    display:inline-block; color:var(--amber);
+}
+.movies p > a[href*="/movies"]:hover{ color:var(--amber-2); }
+
+/* Valgfrit grid til dato-felter – brug <div class="form-grid"> rundt om to felter */
+.movies #movieForm .form-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:12px;
+}
+@media (max-width:640px){
+    .movies #movieForm .form-grid{ grid-template-columns:1fr; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px){
+    .movies main{ padding:18px 12px; }
+    .table th,.table td{ padding:10px; }
+    .movies h1{ font-size:26px; }
+}
