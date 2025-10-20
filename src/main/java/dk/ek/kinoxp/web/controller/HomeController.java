@@ -18,7 +18,7 @@ public class HomeController {
 
     @GetMapping("/mad-drikke")
     public String food() {
-        return "home/placeholder";
+        return "items/list";
     }
 
     @GetMapping("/kalender")
@@ -28,6 +28,6 @@ public class HomeController {
 
     @GetMapping("/vagtplan")
     public String shifts() {
-        return "home/placeholder";
+        return "shifts/list";
     }
 }

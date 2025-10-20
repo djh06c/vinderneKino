@@ -1,6 +1,27 @@
+<link rel="stylesheet" th:href="@{/css/theme.css}">
+<link rel="stylesheet" th:href="@{/css/utilities.css}">
+<link rel="stylesheet" th:href="@{/css/global.css}">
+
+<header class="topbar">
+  <div class="brand">KinoXP</div>
+  <nav class="tabs">
+    <a class="tab" th:href="@{/}">Forside</a>
+    <a class="tab" th:href="@{/billetter}">Billetter</a>
+    <a class="tab" th:href="@{/movies}">Ret i film</a>
+    <a class="tab" th:href="@{/mad-drikke}">Mad / Drikke</a>
+    <a class="tab" th:href="@{/kalender}">Kalender</a>
+    <a class="tab admin" th:href="@{/vagtplan}">Vagtplan</a>
+  </nav>
+  <div class="auth">
+    <span>Bruger: X</span>
+    <a class="btn" href="#">Log ind/ud</a>
+  </div>
+</header>
+<main class = "page">
 <h1>Vagtplan</h1>
 
 <p><a th:href="@{/shifts/new}">➕ Ny vagt</a></p>
+<p><a th:href="@{/employees}"> 🧑 Overblik over medarbejdere </a></p>
 
 <table class="table">
   <thead>
@@ -27,3 +48,4 @@
   </tr>
   </tbody>
 </table>
+</main>
